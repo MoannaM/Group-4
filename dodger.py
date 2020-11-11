@@ -13,6 +13,7 @@ BADDIEMAXSPEED = 8
 ADDNEWBADDIERATE = 6
 PLAYERMOVERATE = 5
 
+
 def terminate():
     pygame.quit()
     sys.exit()
@@ -30,6 +31,12 @@ def waitForPlayerToPressKey():
 def playerHasHitBaddie(playerRect, baddies):
     for b in baddies:
         if playerRect.colliderect(b['rect']):
+            return True
+    return False
+
+def playerHasHitTube(playerRect, tube):
+    for t in tube:
+        if playerRect.colliderect(t['rect']):
             return True
     return False
 
@@ -56,7 +63,10 @@ pygame.mixer.music.load('background.mid')
 # Set up images.
 playerImage = pygame.image.load('player.png')
 playerRect = playerImage.get_rect()
-baddieImage = pygame.image.load('Tube.png')
+baddieImage = pygame.image.load('bombe.png')
+chat = pygame.image.load("Tube.png").convert_alpha()
+rectChat = chat.get_rect()
+rectChat.bottomright=(WINDOWWIDTH,WINDOWHEIGHT)
 
 # Show the "Start" screen.
 windowSurface.fill(BACKGROUNDCOLOR)
@@ -69,12 +79,14 @@ topScore = 0
 while True:
     # Set up the start of the game.
     baddies = []
+    tube = []
     score = 0
     playerRect.topleft = (WINDOWWIDTH / 2, WINDOWHEIGHT - 50)
     moveLeft = moveRight = moveUp = moveDown = False
     reverseCheat = slowCheat = False
     baddieAddCounter = 0
     pygame.mixer.music.play(-1, 0.0)
+
 
     while True: # The game loop runs while the game part is playing.
         score += 1 # Increase score.
@@ -165,6 +177,11 @@ while True:
         # Draw the game world on the window.
         windowSurface.fill(BACKGROUNDCOLOR)
 
+        # Draw tube
+        rectChat = rectChat.move(-1, 0)
+        windowSurface.fill(0x90EE90)
+        windowSurface.blit(chat, rectChat)
+
         # Draw the score and top score.
         drawText('Score: %s' % (score), font, windowSurface, 10, 0)
         drawText('Top Score: %s' % (topScore), font, windowSurface, 10, 40)
@@ -175,8 +192,13 @@ while True:
         # Draw each baddie.
         for b in baddies:
             windowSurface.blit(b["surface"], b['rect'])
-
         pygame.display.update()
+
+        #
+        if playerHasHitTube(playerRect, tube):
+            if score > topScore:
+                topScore = score # set new top score
+            break
 
         # Check if any of the baddies have hit the player.
         if playerHasHitBaddie(playerRect, baddies):
