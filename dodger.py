@@ -13,6 +13,7 @@ BADDIEMAXSPEED = 8
 ADDNEWBADDIERATE = 6
 PLAYERMOVERATE = 5
 
+
 def terminate():
     pygame.quit()
     sys.exit()
@@ -56,7 +57,9 @@ pygame.mixer.music.load('background.mid')
 # Set up images.
 playerImage = pygame.image.load('player.png')
 playerRect = playerImage.get_rect()
-baddieImage = pygame.image.load('Tube.png')
+baddieImage = pygame.image.load('bombe.png')
+chat = pygame.image.load("Tube.png").convert_alpha()
+rectChat = chat.get_rect()
 
 # Show the "Start" screen.
 windowSurface.fill(BACKGROUNDCOLOR)
@@ -75,6 +78,7 @@ while True:
     reverseCheat = slowCheat = False
     baddieAddCounter = 0
     pygame.mixer.music.play(-1, 0.0)
+
 
     while True: # The game loop runs while the game part is playing.
         score += 1 # Increase score.
@@ -164,6 +168,9 @@ while True:
 
         # Draw the game world on the window.
         windowSurface.fill(BACKGROUNDCOLOR)
+        rectChat = rectChat.move(1, 0)
+        windowSurface.fill(0x90EE90)
+        windowSurface.blit(chat, rectChat)
 
         # Draw the score and top score.
         drawText('Score: %s' % (score), font, windowSurface, 10, 0)
@@ -175,8 +182,9 @@ while True:
         # Draw each baddie.
         for b in baddies:
             windowSurface.blit(b["surface"], b['rect'])
-
         pygame.display.update()
+
+
 
         # Check if any of the baddies have hit the player.
         if playerHasHitBaddie(playerRect, baddies):
