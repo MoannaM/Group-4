@@ -1,10 +1,10 @@
 import pygame, random, sys
 from pygame.locals import *
 
-WINDOWWIDTH = 600
-WINDOWHEIGHT = 600
+WINDOWWIDTH = 900
+WINDOWHEIGHT = 500
 TEXTCOLOR = (0, 0, 0)
-BACKGROUNDCOLOR = (255, 255, 255)
+BACKGROUNDCOLOR = (75, 255, 100) #YELLOW GREEN BLUE
 FPS = 60
 BADDIEMINSIZE = 10
 BADDIEMAXSIZE = 40
@@ -67,11 +67,15 @@ baddieImage = pygame.image.load('bombe.png')
 chat = pygame.image.load("Tube.png").convert_alpha()
 rectChat = chat.get_rect()
 rectChat.bottomright=(WINDOWWIDTH,WINDOWHEIGHT)
+Background = pygame.image.load('Background.jpg').convert()
+
+# Set title to the window
+pygame.display.set_caption("Chicken Run")
 
 
 # Show the "Start" screen.
 windowSurface.fill(BACKGROUNDCOLOR)
-drawText('Dodger', font, windowSurface, (WINDOWWIDTH / 3), (WINDOWHEIGHT / 3))
+drawText('Chicken Run', font, windowSurface, (WINDOWWIDTH / 3), (WINDOWHEIGHT / 3))
 drawText('Press a key to start.', font, windowSurface, (WINDOWWIDTH / 3) - 30, (WINDOWHEIGHT / 3) + 50)
 pygame.display.update()
 waitForPlayerToPressKey()
@@ -87,7 +91,7 @@ while True:
     reverseCheat = slowCheat = False
     baddieAddCounter = 0
     pygame.mixer.music.play(-1, 0.0)
-
+    windowSurface.blit(Background, [0, 0])
 
     while True: # The game loop runs while the game part is playing.
         score += 1 # Increase score.
@@ -178,6 +182,10 @@ while True:
         # Draw the game world on the window.
         windowSurface.fill(BACKGROUNDCOLOR)
 
+        # Background game
+        windowSurface.blit(Background, [0, 0])
+
+
         # Draw tube
         rectChat = rectChat.move(-1, 0)
         windowSurface.blit(chat, rectChat)
@@ -202,9 +210,12 @@ while True:
 
         mainClock.tick(FPS)
 
+
     # Stop the game and show the "Game Over" screen.
     pygame.mixer.music.stop()
     gameOverSound.play()
+
+    windowSurface.blit(Background, [0, 0])  # Background pour écran Game Over
 
     drawText('GAME OVER', font, windowSurface, (WINDOWWIDTH / 3), (WINDOWHEIGHT / 3))
     drawText('Press a key to play again.', font, windowSurface, (WINDOWWIDTH / 3) - 80, (WINDOWHEIGHT / 3) + 50)
