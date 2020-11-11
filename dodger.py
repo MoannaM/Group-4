@@ -34,8 +34,8 @@ def playerHasHitBaddie(playerRect, baddies):
             return True
     return False
 
-def playerHasHitTube(playerRect, tube):
-    for t in tube:
+def playerHasHitTube(playerRect, chat): # todo faire la collision avec le tube p-e en enlevant ça
+    for t in chat:
         if playerRect.colliderect(t['rect']):
             return True
     return False
@@ -53,20 +53,21 @@ windowSurface = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
 pygame.display.set_caption('Dodger')
 pygame.mouse.set_visible(False)
 
-# Set up the fonts.
+# Set up the fonts. #todo : changer le fond d'écran
 font = pygame.font.SysFont(None, 48)
 
 # Set up sounds.
 gameOverSound = pygame.mixer.Sound('gameover.wav')
 pygame.mixer.music.load('background.mid')
 
-# Set up images.
+# Set up images. #todo : ajouter image chasseur(qui tire depuis le fond)/renard/balles
 playerImage = pygame.image.load('player.png')
 playerRect = playerImage.get_rect()
 baddieImage = pygame.image.load('bombe.png')
 chat = pygame.image.load("Tube.png").convert_alpha()
 rectChat = chat.get_rect()
 rectChat.bottomright=(WINDOWWIDTH,WINDOWHEIGHT)
+
 
 # Show the "Start" screen.
 windowSurface.fill(BACKGROUNDCOLOR)
@@ -79,7 +80,7 @@ topScore = 0
 while True:
     # Set up the start of the game.
     baddies = []
-    tube = []
+    Chat = []
     score = 0
     playerRect.topleft = (WINDOWWIDTH / 2, WINDOWHEIGHT - 50)
     moveLeft = moveRight = moveUp = moveDown = False
@@ -136,7 +137,7 @@ while True:
                 # If the mouse moves, move the player where to the cursor.
                 playerRect.centerx = event.pos[0]
                 playerRect.centery = event.pos[1]
-        # Add new baddies at the top of the screen, if needed.
+        # Add new baddies at the top of the screen, if needed. # todo : ajouter des tuyaux aléatoirement
         if not reverseCheat and not slowCheat:
             baddieAddCounter += 1
         if baddieAddCounter == ADDNEWBADDIERATE:
@@ -179,7 +180,6 @@ while True:
 
         # Draw tube
         rectChat = rectChat.move(-1, 0)
-        windowSurface.fill(0x90EE90)
         windowSurface.blit(chat, rectChat)
 
         # Draw the score and top score.
@@ -193,12 +193,6 @@ while True:
         for b in baddies:
             windowSurface.blit(b["surface"], b['rect'])
         pygame.display.update()
-
-        #
-        if playerHasHitTube(playerRect, tube):
-            if score > topScore:
-                topScore = score # set new top score
-            break
 
         # Check if any of the baddies have hit the player.
         if playerHasHitBaddie(playerRect, baddies):
