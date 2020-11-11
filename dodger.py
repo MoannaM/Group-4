@@ -68,6 +68,7 @@ chat = pygame.image.load("Tube.png").convert_alpha()
 rectChat = chat.get_rect()
 rectChat.bottomright=(WINDOWWIDTH,WINDOWHEIGHT)
 Background = pygame.image.load('Background.jpg').convert()
+gift = pygame.image.load('EGG.png')
 
 # Set title to the window
 pygame.display.set_caption("Chicken Run")
