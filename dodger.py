@@ -34,6 +34,12 @@ def playerHasHitBaddie(playerRect, baddies):
             return True
     return False
 
+def playerHasHitTube(playerRect, tube):
+    for t in tube:
+        if playerRect.colliderect(t['rect']):
+            return True
+    return False
+
 def drawText(text, font, surface, x, y):
     textobj = font.render(text, 1, TEXTCOLOR)
     textrect = textobj.get_rect()
@@ -60,6 +66,7 @@ playerRect = playerImage.get_rect()
 baddieImage = pygame.image.load('bombe.png')
 chat = pygame.image.load("Tube.png").convert_alpha()
 rectChat = chat.get_rect()
+rectChat.bottomright=(WINDOWWIDTH,WINDOWHEIGHT)
 
 # Show the "Start" screen.
 windowSurface.fill(BACKGROUNDCOLOR)
@@ -72,6 +79,7 @@ topScore = 0
 while True:
     # Set up the start of the game.
     baddies = []
+    tube = []
     score = 0
     playerRect.topleft = (WINDOWWIDTH / 2, WINDOWHEIGHT - 50)
     moveLeft = moveRight = moveUp = moveDown = False
@@ -168,7 +176,9 @@ while True:
 
         # Draw the game world on the window.
         windowSurface.fill(BACKGROUNDCOLOR)
-        rectChat = rectChat.move(1, 0)
+
+        # Draw tube
+        rectChat = rectChat.move(-1, 0)
         windowSurface.fill(0x90EE90)
         windowSurface.blit(chat, rectChat)
 
@@ -184,7 +194,11 @@ while True:
             windowSurface.blit(b["surface"], b['rect'])
         pygame.display.update()
 
-
+        #
+        if playerHasHitTube(playerRect, tube):
+            if score > topScore:
+                topScore = score # set new top score
+            break
 
         # Check if any of the baddies have hit the player.
         if playerHasHitBaddie(playerRect, baddies):
