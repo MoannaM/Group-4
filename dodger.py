@@ -11,6 +11,11 @@ BADDIEMAXSIZE = 40
 BADDIEMINSPEED = 1
 BADDIEMAXSPEED = 8
 ADDNEWBADDIERATE = 6
+TUBEMINSIZE = 5
+TUBEMAXSIZE = 8
+TUBEMAXSPEED = 2
+TUBEMINSPEED = 1
+ADDNEWTUBERATE = 5
 PLAYERMOVERATE = 5
 
 
@@ -34,8 +39,8 @@ def playerHasHitBaddie(playerRect, baddies):
             return True
     return False
 
-def playerHasHitTube(playerRect, chat): # todo faire la collision avec le tube p-e en enlevant ça
-    for t in chat:
+def playerHasHitTube(playerRect, Chat): # todo faire la collision avec le tube p-e en enlevant ça
+    for t in Chat:
         if playerRect.colliderect(t['rect']):
             return True
     return False
@@ -63,12 +68,12 @@ pygame.mixer.music.load('background.mid')
 # Set up images. #todo : ajouter image chasseur(qui tire depuis le fond)/renard/balles
 playerImage = pygame.image.load('player.png')
 playerRect = playerImage.get_rect()
-baddieImage = pygame.image.load('bombe.png')
+baddieImage = pygame.image.load('EGG.png')
 chat = pygame.image.load("Tube.png").convert_alpha()
-rectChat = chat.get_rect()
-rectChat.bottomright=(WINDOWWIDTH,WINDOWHEIGHT)
+#rectChat = chat.get_rect()
+#rectChat.bottomright=(WINDOWWIDTH,WINDOWHEIGHT)
 Background = pygame.image.load('Background.jpg').convert()
-gift = pygame.image.load('EGG.png')
+#gift = pygame.image.load('EGG.png')
 
 # Set title to the window
 pygame.display.set_caption("Chicken Run")
@@ -91,6 +96,7 @@ while True:
     moveLeft = moveRight = moveUp = moveDown = False
     reverseCheat = slowCheat = False
     baddieAddCounter = 0
+    chatAddCounter=0
     pygame.mixer.music.play(-1, 0.0)
     windowSurface.blit(Background, [0, 0])
 
@@ -142,6 +148,7 @@ while True:
                 # If the mouse moves, move the player where to the cursor.
                 playerRect.centerx = event.pos[0]
                 playerRect.centery = event.pos[1]
+
         # Add new baddies at the top of the screen, if needed. # todo : ajouter des tuyaux aléatoirement
         if not reverseCheat and not slowCheat:
             baddieAddCounter += 1
@@ -154,6 +161,18 @@ while True:
                         }
 
             baddies.append(newBaddie)
+
+        if not reverseCheat and not slowCheat:
+            chatAddCounter += 1
+        if chatAddCounter == ADDNEWTUBERATE:
+            chatAddCounter = 0
+            chatSize = random.randint(TUBEMINSIZE, TUBEMAXSIZE)
+            newChat = { 'rect': pygame.Rect(WINDOWWIDTH-chatSize, random.randint(0, WINDOWWIDTH - chatSize), chatSize, chatSize),
+                        'speed': random.randint(TUBEMINSPEED, TUBEMAXSPEED),
+                        'surface':pygame.transform.scale(chat, (chatSize, chatSize)),
+                        }
+
+            Chat.append(newChat)
 
         # Move the player around.
         if moveLeft and playerRect.left > 0:
@@ -174,11 +193,24 @@ while True:
             elif slowCheat:
                 b['rect'].move_ip(1, 0)
 
+        # Move the baddies down.
+        for t in Chat:
+            if not reverseCheat and not slowCheat:
+                t['rect'].move_ip(-t['speed'], 0)
+            elif reverseCheat:
+                t['rect'].move_ip(-5, 0)
+            elif slowCheat:
+                t['rect'].move_ip(1, 0)
 
         # Delete baddies that have fallen past the bottom.
         for b in baddies[:]:
             if -b['rect'].top > WINDOWHEIGHT:
                 baddies.remove(b)
+
+        # Delete baddies that have fallen past the bottom.
+        for t in Chat[:]:
+            if -t['rect'].top > WINDOWHEIGHT:
+                Chat.remove(t)
 
         # Draw the game world on the window.
         windowSurface.fill(BACKGROUNDCOLOR)
@@ -186,10 +218,10 @@ while True:
         # Background game
         windowSurface.blit(Background, [0, 0])
 
-
         # Draw tube
-        rectChat = rectChat.move(-1, 0)
-        windowSurface.blit(chat, rectChat)
+        for t in Chat:
+            windowSurface.blit(t["surface"], t['rect'])
+        pygame.display.update()
 
         # Draw the score and top score.
         drawText('Score: %s' % (score), font, windowSurface, 10, 0)
@@ -205,6 +237,12 @@ while True:
 
         # Check if any of the baddies have hit the player.
         if playerHasHitBaddie(playerRect, baddies):
+            if score > topScore:
+                topScore = score # set new top score
+            break
+
+        # Check if any of the baddies have hit the player.
+        if playerHasHitTube(playerRect, Chat):
             if score > topScore:
                 topScore = score # set new top score
             break
