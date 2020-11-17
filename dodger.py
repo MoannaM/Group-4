@@ -13,8 +13,8 @@ BADDIEMAXSPEED = 8
 ADDNEWBADDIERATE = 6
 TUBEMINSIZE = 5
 TUBEMAXSIZE = 8
-TUBEMAXSPEED = 2
-TUBEMINSPEED = 1
+TUBEMAXSPEED = 8
+TUBEMINSPEED = 4
 ADDNEWTUBERATE = 5
 PLAYERMOVERATE = 5
 
@@ -171,6 +171,7 @@ while True:
                         'speed': random.randint(TUBEMINSPEED, TUBEMAXSPEED),
                         'surface':pygame.transform.scale(chat, (chatSize, chatSize)),
                         }
+            #todo : trouver comment mettre les tubes en bas
 
             Chat.append(newChat)
 
