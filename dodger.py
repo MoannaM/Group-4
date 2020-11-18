@@ -12,7 +12,7 @@ BADDIEMINSPEED = 1
 BADDIEMAXSPEED = 8
 ADDNEWBADDIERATE = 6
 TUBEMINSIZE = 50
-TUBEMAXSIZE = 200
+TUBEMAXSIZE = 80
 TUBEMAXSPEED = 4
 TUBEMINSPEED = 4
 ADDNEWTUBERATE = 50
@@ -45,6 +45,12 @@ def playerHasHitTube(playerRect, Chat):
             return True
     return False
 
+def playerHasHitBadEgg(playerRect, BadEgg):
+    for e in BadEgg:
+        if playerRect.colliderect(e['rect']):
+            return True
+    return False
+
 def drawText(text, font, surface, x, y):
     textobj = font.render(text, 1, TEXTCOLOR)
     textrect = textobj.get_rect()
@@ -69,11 +75,10 @@ pygame.mixer.music.load('background.mid')
 playerImage = pygame.image.load('player.png')
 playerRect = playerImage.get_rect()
 baddieImage = pygame.image.load('EGG.png')
-chat = pygame.image.load("Tube.png").convert_alpha()
-#rectChat = chat.get_rect()
-#rectChat.bottomright=(WINDOWWIDTH,WINDOWHEIGHT)
+chat = pygame.image.load('Tube.png').convert_alpha()
+badegg = pygame.image.load('BadEgg.png').convert_alpha()
 Background = pygame.image.load('Background.jpg').convert()
-#gift = pygame.image.load('EGG.png')
+
 
 # Set title to the window
 pygame.display.set_caption("Chicken Run")
@@ -162,6 +167,7 @@ while True:
 
             baddies.append(newBaddie)
 
+        #Add new tube
         if not reverseCheat and not slowCheat:
             chatAddCounter += 1
         if chatAddCounter == ADDNEWTUBERATE:
@@ -173,6 +179,20 @@ while True:
                         }
 
             Chat.append(newChat)
+
+
+        #Add new badegg
+        if not reverseCheat and not slowCheat:
+            BadEggAddCounter += 1
+        if BadEggAddCounter == ADDNEWBADEGGRATE:
+            BadEggAddCounter = 0
+            BadEggSize = random.randint(BADEGGMINSIZE, BADEGGMAXSIZE)
+            newBaddie = {'rect': pygame.Rect(WINDOWWIDTH-BadEggSize, random.randint(0, WINDOWWIDTH - BadEggSize), baddieSize, baddieSize),
+                        'speed': random.randint(BADDIEMINSPEED, BADDIEMAXSPEED),
+                        'surface':pygame.transform.scale(baddieImage, (baddieSize, baddieSize)),
+                        }
+
+            BadEgg.append(newBaddie)
 
         # Move the player around.
         if moveLeft and playerRect.left > 0:
