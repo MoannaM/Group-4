@@ -6,16 +6,16 @@ WINDOWHEIGHT = 500
 TEXTCOLOR = (0, 0, 0)
 BACKGROUNDCOLOR = (75, 255, 100) #YELLOW GREEN BLUE
 FPS = 60
-BADDIEMINSIZE = 10
+BADDIEMINSIZE = 20
 BADDIEMAXSIZE = 40
 BADDIEMINSPEED = 1
 BADDIEMAXSPEED = 8
 ADDNEWBADDIERATE = 6
-TUBEMINSIZE = 5
-TUBEMAXSIZE = 8
-TUBEMAXSPEED = 8
+TUBEMINSIZE = 50
+TUBEMAXSIZE = 200
+TUBEMAXSPEED = 4
 TUBEMINSPEED = 4
-ADDNEWTUBERATE = 5
+ADDNEWTUBERATE = 50
 PLAYERMOVERATE = 5
 
 
@@ -39,7 +39,7 @@ def playerHasHitBaddie(playerRect, baddies):
             return True
     return False
 
-def playerHasHitTube(playerRect, Chat): # todo faire la collision avec le tube p-e en enlevant ça
+def playerHasHitTube(playerRect, Chat):
     for t in Chat:
         if playerRect.colliderect(t['rect']):
             return True
@@ -58,7 +58,7 @@ windowSurface = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
 pygame.display.set_caption('Dodger')
 pygame.mouse.set_visible(False)
 
-# Set up the fonts. #todo : changer le fond d'écran
+# Set up the fonts.
 font = pygame.font.SysFont(None, 48)
 
 # Set up sounds.
@@ -149,7 +149,7 @@ while True:
                 playerRect.centerx = event.pos[0]
                 playerRect.centery = event.pos[1]
 
-        # Add new baddies at the top of the screen, if needed. # todo : ajouter des tuyaux aléatoirement
+        # Add new baddies at the top of the screen, if needed.
         if not reverseCheat and not slowCheat:
             baddieAddCounter += 1
         if baddieAddCounter == ADDNEWBADDIERATE:
@@ -167,11 +167,10 @@ while True:
         if chatAddCounter == ADDNEWTUBERATE:
             chatAddCounter = 0
             chatSize = random.randint(TUBEMINSIZE, TUBEMAXSIZE)
-            newChat = { 'rect': pygame.Rect(WINDOWWIDTH-chatSize, random.randint(0, WINDOWWIDTH - chatSize), chatSize, chatSize),
+            newChat = { 'rect': pygame.Rect(WINDOWWIDTH-chatSize, WINDOWHEIGHT-chatSize, chatSize, chatSize),
                         'speed': random.randint(TUBEMINSPEED, TUBEMAXSPEED),
                         'surface':pygame.transform.scale(chat, (chatSize, chatSize)),
                         }
-            #todo : trouver comment mettre les tubes en bas
 
             Chat.append(newChat)
 
