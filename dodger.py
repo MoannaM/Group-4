@@ -253,9 +253,9 @@ while True:
 
         #move the Hautdown
         for h in Haut:
-            if not reverseHaut and not slowHaut:
+            if not reverseCheat and not slowCheat:
                 h["rect"].move_ip(-h["speed"],0)
-            elif reverseHaut:
+            elif reverseCheat:
                 h["rect"].move_ip(-5,0)
             elif slowCheat:
                 h["rect"].move_ip(1,0)
@@ -301,7 +301,7 @@ while True:
 
         #draw Haut
         for h in Haut:
-            windowsurface.blit(h["surface"], h["rect"])
+            windowSurface.blit(h["surface"], h["rect"])
         pygame.display.update()
 
         # Draw the score and top score.
