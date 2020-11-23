@@ -92,7 +92,7 @@ baddieImage = pygame.image.load('EGG.png')
 chat =pygame.image.load('Tube.png').convert_alpha()
 badegg = pygame.image.load('BadEgg.png').convert_alpha()
 Background = pygame.image.load('Background.jpg').convert()
-haut = pygame.image.load("tube.png").convert_alpha()
+haut = pygame.transform.rotate(pygame.image.load("Tube.png").convert_alpha(),180)
 #tube du haut = pygame.transform.rotate(pygame.image.load("Tube.png").convert_alpha(),180)
 
 # Set title to the window
@@ -206,7 +206,7 @@ while True:
             HautSize=random.randint(HAUTMINSIZE,HAUTMAXSIZE)
             newHaut = {"rect":pygame.Rect(WINDOWWIDTH-HautSize,-0,HautSize,HautSize),
                         "speed": random.randint(HAUTMINSPEED,HAUTMAXSPEED),
-                        "surface": pygame.transform.scale(Haut,(HautSize,HautSize)),
+                        "surface": pygame.transform.scale(haut,(HautSize,HautSize)),
                         }
             Haut.append(newHaut)
 
