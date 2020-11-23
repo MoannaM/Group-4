@@ -204,9 +204,9 @@ while True:
         if HautAddCounter == ADDNEWHAUTRATE:
             HautAddCounter = 0
             HautSize=random.randint(HAUTMINSIZE,HAUTMAXSIZE)
-            newHaut = {"rect":pygame.Rect(WINDOWWIDHT-HAUTSIZE,-0,HautSize,HautSize),
+            newHaut = {"rect":pygame.Rect(WINDOWWIDTH-HautSize,10,HautSize,HautSize),
                         "speed": random.randint(HAUTMINSPEED,HAUTMAXSPEED),
-                        "surface": pygam.transform.scale(Haut,(HautSize,hautSize)),
+                        "surface": pygame.transform.scale(Haut,(HautSize,HautSize)),
                         }
             Haut.append(newHaut)
 
@@ -253,9 +253,9 @@ while True:
 
         #move the Hautdown
         for h in Haut:
-            if not reverseHaut and not slowHaut:
+            if not reverseCheat and not slowCheat:
                 h["rect"].move_ip(-h["speed"],0)
-            elif reverseHaut:
+            elif reverseCheat:
                 h["rect"].move_ip(-5,0)
             elif slowCheat:
                 h["rect"].move_ip(1,0)
@@ -301,7 +301,7 @@ while True:
 
         #draw Haut
         for h in Haut:
-            windowsurface.blit(h["surface"], h["rect"])
+            windowSurface.blit(h["surface"], h["rect"])
         pygame.display.update()
 
         # Draw the score and top score.
@@ -325,6 +325,7 @@ while True:
         if playerHasHitBaddie(playerRect, baddies):
             score = score+100
             baddies.remove(b)
+
 
 
         # Check if any of the tube have hit the player.
