@@ -82,8 +82,9 @@ pygame.mouse.set_visible(False)
 font = pygame.font.SysFont(None, 48)
 
 # Set up sounds.
-gameOverSound = pygame.mixer.Sound('gameover.wav')
-pygame.mixer.music.load('background.mid')
+gameOverSound = pygame.mixer.Sound('GameOver.mp3')
+PlayerHitBadEggSound = pygame.mixer.Sound('Aïe.mp3')
+pygame.mixer.music.load('Background.mp3')
 
 # Set up images. #todo : ajouter image chasseur(qui tire depuis le fond)/renard/balles
 playerImage = pygame.image.load('Poulet.png')
@@ -93,7 +94,7 @@ baddieImage = pygame.image.load('EGG.png')
 chat = pygame.image.load('Tube.png').convert_alpha()
 badegg = pygame.image.load('BadEgg.png').convert_alpha()
 Background = pygame.image.load('Background.jpg').convert()
-haut = pygame.transform.rotate(pygame.image.load("Tube.png").convert_alpha(),180)
+haut = pygame.image.load("tube.png").convert_alpha()
 #tube du haut = pygame.transform.rotate(pygame.image.load("Tube.png").convert_alpha(),180)
 
 # Set title to the window
@@ -341,6 +342,7 @@ while True:
 
         # Check if any of the badegg have hit the player.
         if playerHasHitBadEgg(playerRect, BadEgg):
+            PlayerHitBadEggSound.play()
             if score > topScore:
                 topScore = score  # set new top score
             break
