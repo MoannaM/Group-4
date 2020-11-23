@@ -86,11 +86,11 @@ gameOverSound = pygame.mixer.Sound('gameover.wav')
 pygame.mixer.music.load('background.mid')
 
 # Set up images. #todo : ajouter image chasseur(qui tire depuis le fond)/renard/balles
-playerImage = pygame.image.load('player.png')
+playerImage = pygame.image.load('Poulet.png')
+playerImage = pygame.transform.scale(playerImage, (60, 60))
 playerRect = playerImage.get_rect()
 baddieImage = pygame.image.load('EGG.png')
 chat = pygame.image.load('Tube.png').convert_alpha()
-#chat = pygame.transform.scale(chat, (40, 40))
 badegg = pygame.image.load('BadEgg.png').convert_alpha()
 Background = pygame.image.load('Background.jpg').convert()
 haut = pygame.transform.rotate(pygame.image.load("Tube.png").convert_alpha(),180)
