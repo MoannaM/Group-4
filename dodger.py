@@ -24,8 +24,8 @@ BADEGGMAXSPEED = 8
 ADDNEWBADEGGRATE = 6
 PLAYERMOVERATE = 5
 
-HAUTMAXSIZE =50
-HAUTMINSIZE= 80
+HAUTMAXSIZE =80
+HAUTMINSIZE= 50
 HAUTMAXSPEED= 4
 HAUTMINSPEED= 4
 ADDNEWHAUTRATE =50
@@ -92,7 +92,7 @@ baddieImage = pygame.image.load('EGG.png')
 chat =pygame.image.load('Tube.png').convert_alpha()
 badegg = pygame.image.load('BadEgg.png').convert_alpha()
 Background = pygame.image.load('Background.jpg').convert()
-haut = pygame.transform.rotate(pygame.image.load("Tube.png").convert_alpha(),180)
+haut = pygame.image.load("tube.png").convert_alpha()
 #tube du haut = pygame.transform.rotate(pygame.image.load("Tube.png").convert_alpha(),180)
 
 # Set title to the window
@@ -204,7 +204,7 @@ while True:
         if HautAddCounter == ADDNEWHAUTRATE:
             HautAddCounter = 0
             HautSize=random.randint(HAUTMINSIZE,HAUTMAXSIZE)
-            newHaut = {"rect":pygame.Rect(WINDOWWIDTH-HautSize,10,HautSize,HautSize),
+            newHaut = {"rect":pygame.Rect(WINDOWWIDTH-HautSize,-0,HautSize,HautSize),
                         "speed": random.randint(HAUTMINSPEED,HAUTMAXSPEED),
                         "surface": pygame.transform.scale(Haut,(HautSize,HautSize)),
                         }
@@ -253,9 +253,9 @@ while True:
 
         #move the Hautdown
         for h in Haut:
-            if not reverseCheat and not slowCheat:
+            if not reverseHaut and not slowHaut:
                 h["rect"].move_ip(-h["speed"],0)
-            elif reverseCheat:
+            elif reverseHaut:
                 h["rect"].move_ip(-5,0)
             elif slowCheat:
                 h["rect"].move_ip(1,0)
@@ -301,7 +301,7 @@ while True:
 
         #draw Haut
         for h in Haut:
-            windowSurface.blit(h["surface"], h["rect"])
+            windowsurface.blit(h["surface"], h["rect"])
         pygame.display.update()
 
         # Draw the score and top score.
@@ -325,7 +325,6 @@ while True:
         if playerHasHitBaddie(playerRect, baddies):
             score = score+100
             baddies.remove(b)
-
 
 
         # Check if any of the tube have hit the player.
