@@ -5,7 +5,7 @@ from pygame.locals import *
 WINDOWWIDTH = 900
 WINDOWHEIGHT = 500
 TEXTCOLOR = (0, 0, 0)
-BACKGROUNDCOLOR = (75, 255, 100) #YELLOW GREEN BLUE
+BACKGROUNDCOLOR = (75, 255, 100)  #YELLOW GREEN BLUE
 FPS = 60
 BADDIEMINSIZE = 20
 BADDIEMAXSIZE = 40
@@ -82,9 +82,9 @@ pygame.mouse.set_visible(False)
 font = pygame.font.SysFont(None, 48)
 
 # Set up sounds.
-gameOverSound = pygame.mixer.Sound('GameOver.mp3')
-PlayerHitBadEggSound = pygame.mixer.Sound('Aïe.mp3')
-pygame.mixer.music.load('Background.mp3')
+#gameOverSound = pygame.mixer.Sound('GameOver.mp3')
+#PlayerHitBadEggSound = pygame.mixer.Sound('Aïe.mp3')
+#pygame.mixer.music.load('Background.mp3')
 
 # Set up images. #todo : ajouter image chasseur(qui tire depuis le fond)/renard/balles
 playerImage = pygame.image.load('Poulet.png')
@@ -116,6 +116,7 @@ while True:
     BadEgg = []
     Haut = []
     score = 0
+    vie = 3
     playerRect.topleft = (WINDOWWIDTH / 2, WINDOWHEIGHT - 50)
     moveLeft = moveRight = moveUp = moveDown = False
     reverseCheat = slowCheat = False
@@ -124,7 +125,7 @@ while True:
     BadEggAddCounter = 0
     tubeAddCounter = 0
     HautAddCounter =0
-    pygame.mixer.music.play(-1, 0.0)
+    #pygame.mixer.music.play(-1, 0.0)
     windowSurface.blit(Background, [0, 0])
 
     while True: # The game loop runs while the game part is playing.
@@ -326,7 +327,8 @@ while True:
         # Check if any of the egg have hit the player.
         if playerHasHitBaddie(playerRect, baddies):
             score = score+100
-            baddies.remove(b)
+            for b in baddies :
+                baddies.remove(b)
 
 
         # Check if any of the tube have hit the player.
@@ -342,16 +344,20 @@ while True:
 
         # Check if any of the badegg have hit the player.
         if playerHasHitBadEgg(playerRect, BadEgg):
-            PlayerHitBadEggSound.play()
-            if score > topScore:
-                topScore = score  # set new top score
-            break
+            for e in BadEgg :
+                BadEgg.remove(e)
+            if vie<1:
+            #if score > topScore:
+                #topScore = score  # set new top score
+                break
+            else :
+                vie=vie-1
 
         mainClock.tick(FPS)
 
         # Stop the game and show the "Game Over" screen.
     pygame.mixer.music.stop()
-    gameOverSound.play()
+    #gameOverSound.play()
 
     windowSurface.blit(Background, [0, 0])  # Background pour écran Game Over
 
@@ -360,5 +366,5 @@ while True:
     pygame.display.update()
     waitForPlayerToPressKey()
 
-    gameOverSound.stop()
+    #gameOverSound.stop()
     # inflate pour le changement du player
