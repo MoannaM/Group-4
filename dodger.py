@@ -12,8 +12,8 @@ BADDIEMAXSIZE = 40
 BADDIEMINSPEED = 1
 BADDIEMAXSPEED = 8
 ADDNEWBADDIERATE = 20
-TUBEMINSIZE = 50
-TUBEMAXSIZE = 80
+TUBEMINSIZE = 40
+TUBEMAXSIZE = 140
 TUBEMAXSPEED = 4
 TUBEMINSPEED = 4
 ADDNEWTUBERATE = 50
@@ -89,7 +89,8 @@ pygame.mixer.music.load('background.mid')
 playerImage = pygame.image.load('player.png')
 playerRect = playerImage.get_rect()
 baddieImage = pygame.image.load('EGG.png')
-chat =pygame.image.load('Tube.png').convert_alpha()
+chat = pygame.image.load('Tube.png').convert_alpha()
+#chat = pygame.transform.scale(chat, (40, 40))
 badegg = pygame.image.load('BadEgg.png').convert_alpha()
 Background = pygame.image.load('Background.jpg').convert()
 haut = pygame.transform.rotate(pygame.image.load("Tube.png").convert_alpha(),180)
@@ -195,7 +196,7 @@ while True:
             chatSize = random.randint(TUBEMINSIZE, TUBEMAXSIZE)
             newChat = { 'rect': pygame.Rect(WINDOWWIDTH-chatSize,WINDOWHEIGHT-chatSize, chatSize, chatSize),
                         'speed': random.randint(TUBEMINSPEED, TUBEMAXSPEED),
-                        'surface':pygame.transform.scale(chat, (chatSize, chatSize)),
+                        'surface':pygame.transform.scale(chat, (40, chatSize)),
                         }
             Chat.append(newChat)
         #Add new haut
