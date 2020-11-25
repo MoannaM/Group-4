@@ -94,7 +94,7 @@ baddieImage = pygame.image.load('EGG.png')
 chat = pygame.image.load('Tube.png').convert_alpha()
 badegg = pygame.image.load('BadEgg.png').convert_alpha()
 Background = pygame.image.load('Background.jpg').convert()
-haut = pygame.image.load("tube.png").convert_alpha()
+haut = pygame.transform.rotate(pygame.image.load("tube.png").convert_alpha(),180)
 #tube du haut = pygame.transform.rotate(pygame.image.load("Tube.png").convert_alpha(),180)
 
 # Set title to the window
@@ -116,6 +116,7 @@ while True:
     BadEgg = []
     Haut = []
     score = 0
+    vie = 3
     playerRect.topleft = (WINDOWWIDTH / 2, WINDOWHEIGHT - 50)
     moveLeft = moveRight = moveUp = moveDown = False
     reverseCheat = slowCheat = False
@@ -309,6 +310,7 @@ while True:
         # Draw the score and top score.
         drawText('Score: %s' % (score), font, windowSurface, 10, 0)
         drawText('Top Score: %s' % (topScore), font, windowSurface, 10, 40)
+        drawText("vie: %s" % (vie), font, windowSurface, 10, 80)
 
         # Draw the player's rectangle.
         windowSurface.blit(playerImage , playerRect)
@@ -343,9 +345,14 @@ while True:
         # Check if any of the badegg have hit the player.
         if playerHasHitBadEgg(playerRect, BadEgg):
             PlayerHitBadEggSound.play()
-            if score > topScore:
-                topScore = score  # set new top score
-            break
+            for e in BadEgg[:]:
+                if playerHasHitBadEgg(playerRect, BadEgg):
+                    BadEgg.remove(e)
+            if vie< 1:
+                break
+            else:
+                vie=vie-1
+
 
         mainClock.tick(FPS)
 
