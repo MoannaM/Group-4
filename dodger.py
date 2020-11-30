@@ -44,27 +44,27 @@ def waitForPlayerToPressKey():
                     terminate()
                 return
 
-def playerHasHitBaddie(player.pygame.rect, bonus):
+def playerHasHitBaddie(playerRect, bonus):
     for b in bonus:
         if player.rect.colliderect(b['rect']):
             return True
     return False
 
-def playerHasHitTube(player.pygame.rect, Tube):
+def playerHasHitTube(playerRect, Tube):
     for t in Tube:
-        if player.pygame.rect.colliderect(t['rect']):
+        if playerRect.colliderect(t['rect']):
             return True
     return False
 
 def playerHasHitHaut(playerRect, Tube_Haut):
     for h in Tube_Haut:
-        if player.pygame.rect.colliderect(h["rect"]):
+        if playerRect.colliderect(h["rect"]):
             return True
     return False
 
 def playerHasHitBadEgg(playerRect, BadEgg):
     for e in BadEgg:
-        if player.pygame.rect.colliderect(e['rect']):
+        if playerRect.colliderect(e['rect']):
             return True
     return False
 
@@ -79,7 +79,7 @@ class Player(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.image.load('Poulet.png')
-        self.rect = self.player.image.get_rect()
+        self.rect = self.image.get_rect()
         self.MOVERATE = 5
 
 player = Player()
@@ -358,12 +358,12 @@ while True:
                 if playerHasHitBadEgg(player.rect, BadEgg):
                     BadEgg.remove(e)
             if vie< 2:
+                if score > topScore:
+                    topScore=score
                 break
             else:
                 vie=vie-1
 
-
-        mainClock.tick(FPS)
 
         # Stop the game and show the "Game Over" screen.
     pygame.mixer.music.stop()
