@@ -5,8 +5,8 @@ from pygame.locals import *
 WINDOWWIDTH = 900
 WINDOWHEIGHT = 500
 TEXTCOLOR = (0, 0, 0)
-BACKGROUNDCOLOR = (75, 255, 100) #YELLOW GREEN BLUE
-FPS = 60
+#BACKGROUNDCOLOR = (75, 255, 100) #YELLOW GREEN BLUE
+#FPS = 60
 BONUSMINSIZE = 20
 BONUSMAXSIZE = 40
 BONUSMINSPEED = 1
@@ -16,18 +16,18 @@ TUBEMINSIZE = 40
 TUBEMAXSIZE = 140
 TUBEMAXSPEED = 4
 TUBEMINSPEED = 4
-ADDNEWTUBERATE = 50
+ADDNEWTUBERATE = 5000
 BADEGGMINSIZE = 20
 BADEGGMAXSIZE = 40
 BADEGGMINSPEED = 1
 BADEGGMAXSPEED = 8
-ADDNEWBADEGGRATE = 6
-#PLAYERMOVERATE = 5
+ADDNEWBADEGGRATE = 6000
+PLAYERMOVERATE = 5
 Tube_HautMAXSIZE =80
 Tube_HautMINSIZE= 50
 Tube_HautMAXSPEED= 4
 Tube_HautMINSPEED= 4
-ADDNEWTube_HAUTRATE =50
+ADDNEWTube_HAUTRATE =5000
 
 
 def terminate():
@@ -86,10 +86,10 @@ player = Player()
 
 # Set up pygame, the window, and the mouse cursor.
 pygame.init()
-mainClock = pygame.time.Clock()
+#mainClock = pygame.time.Clock()
 windowSurface = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
-pygame.display.set_caption('Dodger')
-pygame.mouse.set_visible(False)
+#pygame.display.set_caption('Dodger') #Remplacer dodger par chicken run
+pygame.mouse.set_visible(True)
 
 # Set up the fonts.
 font = pygame.font.SysFont(None, 48)
@@ -106,15 +106,14 @@ tube = pygame.image.load('Tube.png').convert_alpha()
 badegg = pygame.image.load('BadEgg.png').convert_alpha()
 Background = pygame.image.load('Background.jpg').convert()
 tube_Haut = pygame.transform.rotate(pygame.image.load("tube.png").convert_alpha(),180)
+GameOverBackground = pygame.image.load('Background-gameover.png')
+StartBackground = pygame.image.load('StartBackground.png')
 #tube du haut = pygame.transform.rotate(pygame.image.load("Tube.png").convert_alpha(),180)
-
-# Set title to the window
-pygame.display.set_caption("Chicken Run")
 
 
 # Show the "Start" screen.
-windowSurface.fill(BACKGROUNDCOLOR)
-drawText('Chicken Run', font, windowSurface, (WINDOWWIDTH / 3), (WINDOWHEIGHT / 3))
+windowSurface.blit(StartBackground, [0, 0])
+#drawText('Chicken Run', font, windowSurface, (WINDOWWIDTH / 3), (WINDOWHEIGHT / 3))
 drawText('Press a key to start.', font, windowSurface, (WINDOWWIDTH / 3) - 30, (WINDOWHEIGHT / 3) + 50)
 pygame.display.update()
 waitForPlayerToPressKey()
@@ -137,6 +136,7 @@ while True:
     Tube_HautAddCounter =0
     pygame.mixer.music.play(-1, 0.0)
     windowSurface.blit(Background, [0, 0])
+    pygame.mouse.set_visible(False)
 
     while True: # The game loop runs while the game part is playing.
         score += 1 # Increase score.
@@ -145,42 +145,42 @@ while True:
             if event.type == QUIT:
                 terminate()
 
-            if event.type == KEYDOWN:
-                if event.key == K_z:
-                    reverseCheat = True
-                if event.key == K_x:
-                    slowCheat = True
-                if event.key == K_LEFT or event.key == K_a:
-                    moveRight = False
-                    moveLeft = True
-                if event.key == K_RIGHT or event.key == K_d:
-                    moveLeft = False
-                    moveRight = True
-                if event.key == K_UP or event.key == K_w:
-                    moveDown = False
-                    moveUp = True
-                if event.key == K_DOWN or event.key == K_s:
-                    moveUp = False
-                    moveDown = True
+            #if event.type == KEYDOWN:
+             #   if event.key == K_z:
+              #      reverseCheat = True
+              #  if event.key == K_x:
+              #      slowCheat = True
+               # if event.key == K_LEFT or event.key == K_a:
+               #     moveRight = False
+                #    moveLeft = True
+                #if event.key == K_RIGHT or event.key == K_d:
+               #     moveLeft = False
+                #    moveRight = True
+                #if event.key == K_UP or event.key == K_w:
+                 #   moveDown = False
+                  #  moveUp = True
+                #if event.key == K_DOWN or event.key == K_s:
+                 #   moveUp = False
+                  #  moveDown = True
 
-            if event.type == KEYUP:
-                if event.key == K_z:
-                    reverseCheat = False
-                    score = 0
-                if event.key == K_x:
-                    slowCheat = False
-                    score = 0
-                if event.key == K_ESCAPE:
-                        terminate()
+            #if event.type == KEYUP:
+             #   if event.key == K_z:
+              #      reverseCheat = False
+                #    score = 0
+                #if event.key == K_x:
+                 #   slowCheat = False
+                  #  score = 0
+                #if event.key == K_ESCAPE:
+                 #       terminate()
 
-                if event.key == K_LEFT or event.key == K_a:
-                    moveLeft = False
-                if event.key == K_RIGHT or event.key == K_d:
-                    moveRight = False
-                if event.key == K_UP or event.key == K_w:
-                    moveUp = False
-                if event.key == K_DOWN or event.key == K_s:
-                    moveDown = False
+               # if event.key == K_LEFT or event.key == K_a:
+                   # moveLeft = False
+                #if event.key == K_RIGHT or event.key == K_d:
+                    #moveRight = False
+                #if event.key == K_UP or event.key == K_w:
+                 #   moveUp = False
+                #if event.key == K_DOWN or event.key == K_s:
+                 #   moveDown = False
 
             if event.type == MOUSEMOTION:
                 # If the mouse moves, move the player where to the cursor.
@@ -302,7 +302,7 @@ while True:
                 BadEgg.remove(e)
 
         # Draw the game world on the window.
-        windowSurface.fill(BACKGROUNDCOLOR)
+        #windowSurface.fill(BACKGROUNDCOLOR)
 
         # Background game
         windowSurface.blit(Background, [0, 0])
@@ -369,7 +369,8 @@ while True:
     pygame.mixer.music.stop()
     gameOverSound.play()
 
-    windowSurface.blit(Background, [0, 0])  # Background pour écran Game Over
+    windowSurface.blit(GameOverBackground, [0, 0])
+    pygame.mouse.set_visible(True)
 
     drawText('GAME OVER', font, windowSurface, (WINDOWWIDTH / 3), (WINDOWHEIGHT / 3))
     drawText('Press a key to play again.', font, windowSurface, (WINDOWWIDTH / 3) - 80, (WINDOWHEIGHT / 3) + 50)
