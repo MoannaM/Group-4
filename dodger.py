@@ -7,11 +7,11 @@ WINDOWHEIGHT = 500
 TEXTCOLOR = (0, 0, 0)
 BACKGROUNDCOLOR = (75, 255, 100) #YELLOW GREEN BLUE
 FPS = 60
-BADDIEMINSIZE = 20
-BADDIEMAXSIZE = 40
-BADDIEMINSPEED = 1
-BADDIEMAXSPEED = 8
-ADDNEWBADDIERATE = 20
+BONUSMINSIZE = 20
+BONUSMAXSIZE = 40
+BONUSMINSPEED = 1
+BONUSMAXSPEED = 8
+ADDNEWBONUSRATE = 20
 TUBEMINSIZE = 40
 TUBEMAXSIZE = 140
 TUBEMAXSPEED = 4
@@ -23,12 +23,11 @@ BADEGGMINSPEED = 1
 BADEGGMAXSPEED = 8
 ADDNEWBADEGGRATE = 6
 PLAYERMOVERATE = 5
-
-HAUTMAXSIZE =80
-HAUTMINSIZE= 50
-HAUTMAXSPEED= 4
-HAUTMINSPEED= 4
-ADDNEWHAUTRATE =50
+Tube_HautMAXSIZE =80
+Tube_HautMINSIZE= 50
+Tube_HautMAXSPEED= 4
+Tube_HautMINSPEED= 4
+ADDNEWTube_HAUTRATE =50
 def terminate():
     pygame.quit()
     sys.exit()
@@ -43,20 +42,20 @@ def waitForPlayerToPressKey():
                     terminate()
                 return
 
-def playerHasHitBaddie(playerRect, baddies):
-    for b in baddies:
+def playerHasHitBaddie(playerRect, bonus):
+    for b in bonus:
         if playerRect.colliderect(b['rect']):
             return True
     return False
 
-def playerHasHitTube(playerRect, Chat):
-    for t in Chat:
+def playerHasHitTube(playerRect, Tube):
+    for t in Tube:
         if playerRect.colliderect(t['rect']):
             return True
     return False
-def playerHasHitHaut(playerRect, Haut):
-    for h in Haut:
-       if playerRect.colliderect(h["rect"]):
+def playerHasHitHaut(playerRect, Tube_Haut):
+    for h in Tube_Haut:
+        if playerRect.colliderect(h["rect"]):
             return True
     return False
 def playerHasHitBadEgg(playerRect, BadEgg):
@@ -90,11 +89,11 @@ pygame.mixer.music.load('Background.wav')
 playerImage = pygame.image.load('Poulet.png')
 playerImage = pygame.transform.scale(playerImage, (60, 60))
 playerRect = playerImage.get_rect()
-baddieImage = pygame.image.load('EGG.png')
-chat = pygame.image.load('Tube.png').convert_alpha()
+bonusImage = pygame.image.load('EGG.png')
+tube = pygame.image.load('Tube.png').convert_alpha()
 badegg = pygame.image.load('BadEgg.png').convert_alpha()
 Background = pygame.image.load('Background.jpg').convert()
-haut = pygame.transform.rotate(pygame.image.load("tube.png").convert_alpha(),180)
+tube_Haut = pygame.transform.rotate(pygame.image.load("tube.png").convert_alpha(),180)
 #tube du haut = pygame.transform.rotate(pygame.image.load("Tube.png").convert_alpha(),180)
 
 # Set title to the window
@@ -111,20 +110,19 @@ waitForPlayerToPressKey()
 topScore = 0
 while True:
     # Set up the start of the game.
-    baddies = []
-    Chat = []
+    bonus = []
+    Tube = []
     BadEgg = []
-    Haut = []
+    Tube_Haut = []
     score = 0
     vie = 3
     playerRect.topleft = (WINDOWWIDTH / 2, WINDOWHEIGHT - 50)
     moveLeft = moveRight = moveUp = moveDown = False
     reverseCheat = slowCheat = False
-    baddieAddCounter = 0
-    chatAddCounter=0
+    bonusAddCounter = 0
+    TubeAddCounter=0
     BadEggAddCounter = 0
-    tubeAddCounter = 0
-    HautAddCounter =0
+    Tube_HautAddCounter =0
     pygame.mixer.music.play(-1, 0.0)
     windowSurface.blit(Background, [0, 0])
 
@@ -177,41 +175,41 @@ while True:
                 playerRect.centerx = event.pos[0]
                 playerRect.centery = event.pos[1]
 
-        # Add new baddies at the top of the screen, if needed.
+        # Add new bonus at the top of the screen, if needed.
         if not reverseCheat and not slowCheat:
-            baddieAddCounter += 1
-        if baddieAddCounter == ADDNEWBADDIERATE:
-            baddieAddCounter = 0
-            baddieSize = random.randint(BADDIEMINSIZE, BADDIEMAXSIZE)
-            newBaddie = {'rect': pygame.Rect(WINDOWWIDTH-baddieSize, random.randint(0, WINDOWWIDTH - baddieSize), baddieSize, baddieSize),
-                        'speed': random.randint(BADDIEMINSPEED, BADDIEMAXSPEED),
-                        'surface':pygame.transform.scale(baddieImage, (baddieSize, baddieSize)),
+            bonusAddCounter += 1
+        if bonusAddCounter == ADDNEWBONUSRATE:
+            bonusAddCounter = 0
+            bonusSize = random.randint(BONUSMINSIZE, BONUSMAXSIZE)
+            newBonus = {'rect': pygame.Rect(WINDOWWIDTH-bonusSize, random.randint(0, WINDOWWIDTH - bonusSize), bonusSize, bonusSize),
+                        'speed': random.randint(BONUSMINSPEED, BONUSMAXSPEED),
+                        'surface':pygame.transform.scale(bonusImage, (bonusSize, bonusSize)),
                         }
 
-            baddies.append(newBaddie)
+            bonus.append(newBonus)
 
         #Add new tube
         if not reverseCheat and not slowCheat:
-            chatAddCounter += 1
-        if chatAddCounter == ADDNEWTUBERATE:
-            chatAddCounter = 0
-            chatSize = random.randint(TUBEMINSIZE, TUBEMAXSIZE)
-            newChat = { 'rect': pygame.Rect(WINDOWWIDTH-chatSize,WINDOWHEIGHT-chatSize, chatSize, chatSize),
+            TubeAddCounter += 1
+        if TubeAddCounter == ADDNEWTUBERATE:
+            TubeAddCounter = 0
+            tubeSize = random.randint(TUBEMINSIZE, TUBEMAXSIZE)
+            newTube = { 'rect': pygame.Rect(WINDOWWIDTH-tubeSize,WINDOWHEIGHT-tubeSize, tubeSize, tubeSize),
                         'speed': random.randint(TUBEMINSPEED, TUBEMAXSPEED),
-                        'surface':pygame.transform.scale(chat, (40, chatSize)),
+                        'surface':pygame.transform.scale(tube, (40, tubeSize)),
                         }
-            Chat.append(newChat)
-        #Add new haut
+            Tube.append(newTube)
+        #Add new tube_haut
         if not reverseCheat and not slowCheat:
-            HautAddCounter+= 1
-        if HautAddCounter == ADDNEWHAUTRATE:
-            HautAddCounter = 0
-            HautSize=random.randint(HAUTMINSIZE,HAUTMAXSIZE)
-            newHaut = {"rect":pygame.Rect(WINDOWWIDTH-HautSize,-0,HautSize,HautSize),
-                        "speed": random.randint(HAUTMINSPEED,HAUTMAXSPEED),
-                        "surface": pygame.transform.scale(haut,(HautSize,HautSize)),
+            Tube_HautAddCounter+= 1
+        if Tube_HautAddCounter == ADDNEWTube_HAUTRATE:
+            Tube_HautAddCounter = 0
+            Tube_HautSize=random.randint(Tube_HautMINSIZE,Tube_HautMAXSIZE)
+            newTube_Haut = {"rect":pygame.Rect(WINDOWWIDTH-Tube_HautSize,-0,Tube_HautSize,Tube_HautSize),
+                        "speed": random.randint(Tube_HautMINSPEED,Tube_HautMAXSPEED),
+                        "surface": pygame.transform.scale(tube_Haut,(Tube_HautSize,Tube_HautSize)),
                         }
-            Haut.append(newHaut)
+            Tube_Haut.append(newTube_Haut)
 
         #Add new badegg
         if not reverseCheat and not slowCheat:
@@ -220,7 +218,7 @@ while True:
             BadEggAddCounter = 0
             BadEggSize = random.randint(BADEGGMINSIZE, BADEGGMAXSIZE)
             newBadEgg = {'rect': pygame.Rect(WINDOWWIDTH-BadEggSize, random.randint(0, WINDOWWIDTH - BadEggSize), BadEggSize, BadEggSize),
-                        'speed': random.randint(BADDIEMINSPEED, BADEGGMAXSPEED),
+                        'speed': random.randint(BADEGGMINSPEED, BADEGGMAXSPEED),
                         'surface':pygame.transform.scale(badegg, (BadEggSize, BadEggSize)),
                         }
 
@@ -236,8 +234,8 @@ while True:
         if moveDown and playerRect.bottom < WINDOWHEIGHT:
             playerRect.move_ip(0, PLAYERMOVERATE)
 
-        # Move the baddies down.
-        for b in baddies:
+        # Move the bonus down.
+        for b in bonus:
             if not reverseCheat and not slowCheat:
                 b ['rect'].move_ip(-b['speed'],0 )
             elif reverseCheat:
@@ -246,7 +244,7 @@ while True:
                 b['rect'].move_ip(1, 0)
 
         # Move the tubes down.
-        for t in Chat:
+        for t in Tube:
             if not reverseCheat and not slowCheat:
                 t['rect'].move_ip(-t['speed'], 0)
             elif reverseCheat:
@@ -254,8 +252,8 @@ while True:
             elif slowCheat:
                 t['rect'].move_ip(1, 0)
 
-        #move the Hautdown
-        for h in Haut:
+        #move the tube_Haut down
+        for h in Tube_Haut:
             if not reverseCheat and not slowCheat:
                 h["rect"].move_ip(-h["speed"],0)
             elif reverseCheat:
@@ -272,21 +270,21 @@ while True:
             elif slowCheat:
                 e['rect'].move_ip(1, 0)
 
-        # Delete baddies that have fallen past the bottom.
-        for b in baddies[:]:
+        # Delete bonus that have fallen past the bottom.
+        for b in bonus[:]:
             if -b['rect'].top > WINDOWWIDTH:
-                baddies.remove(b)
+                bonus.remove(b)
 
         # Delete tubes that have fallen past the bottom.
-        for t in Chat[:]:
+        for t in Tube[:]:
             if -t['rect'].top > WINDOWWIDTH:
-                Chat.remove(t)
-        # Delete haut have fallen past the bottom
-        for h in Haut[:]:
+                Tube.remove(t)
+        # Delete tube_haut have fallen past the bottom
+        for h in Tube_Haut[:]:
             if -h["rect"].top > WINDOWWIDTH:
-                Haut.remove(h)
+                Tube_Haut.remove(h)
 
-        # Delete tubes that have fallen past the bottom.
+        # Delete badegg that have fallen past the bottom.
         for e in BadEgg[:]:
             if -e['rect'].top > WINDOWWIDTH:
                 BadEgg.remove(e)
@@ -298,12 +296,12 @@ while True:
         windowSurface.blit(Background, [0, 0])
 
         # Draw tube
-        for t in Chat:
+        for t in Tube:
             windowSurface.blit(t["surface"], t['rect'])
         pygame.display.update()
 
-        #draw Haut
-        for h in Haut:
+        #draw Tube_Haut
+        for h in Tube_Haut:
             windowSurface.blit(h["surface"], h["rect"])
         pygame.display.update()
 
@@ -313,10 +311,10 @@ while True:
         drawText("vie: %s" % (vie), font, windowSurface, 10, 80)
 
         # Draw the player's rectangle.
-        windowSurface.blit(playerImage , playerRect)
+        windowSurface.blit(playerImage, playerRect)
 
-        # Draw each baddie.
-        for b in baddies:
+        # Draw each bonus.
+        for b in bonus:
             windowSurface.blit(b["surface"], b['rect'])
         pygame.display.update()
 
@@ -325,19 +323,18 @@ while True:
             windowSurface.blit(e["surface"], e['rect'])
         pygame.display.update()
 
-        # Check if any of the egg have hit the player.
-        if playerHasHitBaddie(playerRect, baddies):
+        # Check if any of the bonus have hit the player.
+        if playerHasHitBaddie(playerRect, bonus):
             score = score+100
-            baddies.remove(b)
-
+            bonus.remove(b)
 
         # Check if any of the tube have hit the player.
-        if playerHasHitTube(playerRect, Chat):
+        if playerHasHitTube(playerRect, Tube):
             if score > topScore:
                 topScore = score # set new top score
             break
-        # chech if any of Haut have hit the player
-        if playerHasHitHaut(playerRect, Haut):
+        # chech if any of tube_Haut have hit the player
+        if playerHasHitHaut(playerRect, Tube_Haut):
             if score > topScore:
                 topScore = score
             break
@@ -348,7 +345,7 @@ while True:
             for e in BadEgg[:]:
                 if playerHasHitBadEgg(playerRect, BadEgg):
                     BadEgg.remove(e)
-            if vie< 1:
+            if vie< 2:
                 break
             else:
                 vie=vie-1
@@ -368,4 +365,3 @@ while True:
     waitForPlayerToPressKey()
 
     gameOverSound.stop()
-    # inflate pour le changement du player
