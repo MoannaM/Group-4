@@ -22,12 +22,14 @@ BADEGGMAXSIZE = 40
 BADEGGMINSPEED = 1
 BADEGGMAXSPEED = 8
 ADDNEWBADEGGRATE = 6
-PLAYERMOVERATE = 5
+#PLAYERMOVERATE = 5
 Tube_HautMAXSIZE =80
 Tube_HautMINSIZE= 50
 Tube_HautMAXSPEED= 4
 Tube_HautMINSPEED= 4
 ADDNEWTube_HAUTRATE =50
+
+
 def terminate():
     pygame.quit()
     sys.exit()
@@ -42,25 +44,27 @@ def waitForPlayerToPressKey():
                     terminate()
                 return
 
-def playerHasHitBaddie(playerRect, bonus):
+def playerHasHitBaddie(player.pygame.rect, bonus):
     for b in bonus:
-        if playerRect.colliderect(b['rect']):
+        if player.rect.colliderect(b['rect']):
             return True
     return False
 
-def playerHasHitTube(playerRect, Tube):
+def playerHasHitTube(player.pygame.rect, Tube):
     for t in Tube:
-        if playerRect.colliderect(t['rect']):
+        if player.pygame.rect.colliderect(t['rect']):
             return True
     return False
+
 def playerHasHitHaut(playerRect, Tube_Haut):
     for h in Tube_Haut:
-        if playerRect.colliderect(h["rect"]):
+        if player.pygame.rect.colliderect(h["rect"]):
             return True
     return False
+
 def playerHasHitBadEgg(playerRect, BadEgg):
     for e in BadEgg:
-        if playerRect.colliderect(e['rect']):
+        if player.pygame.rect.colliderect(e['rect']):
             return True
     return False
 
@@ -69,6 +73,16 @@ def drawText(text, font, surface, x, y):
     textrect = textobj.get_rect()
     textrect.topleft = (x, y)
     surface.blit(textobj, textrect)
+
+
+class Player(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load('Poulet.png')
+        self.rect = self.player.image.get_rect()
+        self.MOVERATE = 5
+
+player = Player()
 
 # Set up pygame, the window, and the mouse cursor.
 pygame.init()
@@ -86,9 +100,7 @@ PlayerHitBadEggSound = pygame.mixer.Sound('Aïe.wav')
 pygame.mixer.music.load('Background.wav')
 
 # Set up images. #todo : ajouter image chasseur(qui tire depuis le fond)/renard/balles
-playerImage = pygame.image.load('Poulet.png')
-playerImage = pygame.transform.scale(playerImage, (60, 60))
-playerRect = playerImage.get_rect()
+
 bonusImage = pygame.image.load('EGG.png')
 tube = pygame.image.load('Tube.png').convert_alpha()
 badegg = pygame.image.load('BadEgg.png').convert_alpha()
@@ -116,7 +128,7 @@ while True:
     Tube_Haut = []
     score = 0
     vie = 3
-    playerRect.topleft = (WINDOWWIDTH / 2, WINDOWHEIGHT - 50)
+    player.rect.topleft = (WINDOWWIDTH / 2, WINDOWHEIGHT - 50)
     moveLeft = moveRight = moveUp = moveDown = False
     reverseCheat = slowCheat = False
     bonusAddCounter = 0
@@ -172,8 +184,8 @@ while True:
 
             if event.type == MOUSEMOTION:
                 # If the mouse moves, move the player where to the cursor.
-                playerRect.centerx = event.pos[0]
-                playerRect.centery = event.pos[1]
+                player.rect.centerx = event.pos[0]
+                player.rect.centery = event.pos[1]
 
         # Add new bonus at the top of the screen, if needed.
         if not reverseCheat and not slowCheat:
@@ -225,14 +237,14 @@ while True:
             BadEgg.append(newBadEgg)
 
         # Move the player around.
-        if moveLeft and playerRect.left > 0:
-            playerRect.move_ip(-1 * PLAYERMOVERATE, 0)
-        if moveRight and playerRect.right < WINDOWWIDTH:
-            playerRect.move_ip(PLAYERMOVERATE, 0)
-        if moveUp and playerRect.top > 0:
-            playerRect.move_ip(0, -1 * PLAYERMOVERATE)
-        if moveDown and playerRect.bottom < WINDOWHEIGHT:
-            playerRect.move_ip(0, PLAYERMOVERATE)
+        if moveLeft and player.rect.left > 0:
+            player.rect.move_ip(-1 * player.MOVERATE, 0)
+        if moveRight and player.rect.right < WINDOWWIDTH:
+            player.rect.move_ip(player.MOVERATE, 0)
+        if moveUp and player.rect.top > 0:
+            player.rect.move_ip(0, -1 * player.MOVERATE)
+        if moveDown and player.rect.bottom < WINDOWHEIGHT:
+            player.rect.move_ip(0, player.MOVERATE)
 
         # Move the bonus down.
         for b in bonus:
@@ -311,7 +323,7 @@ while True:
         drawText("vie: %s" % (vie), font, windowSurface, 10, 80)
 
         # Draw the player's rectangle.
-        windowSurface.blit(playerImage, playerRect)
+        windowSurface.blit(player.image, player.rect)
 
         # Draw each bonus.
         for b in bonus:
@@ -324,26 +336,26 @@ while True:
         pygame.display.update()
 
         # Check if any of the bonus have hit the player.
-        if playerHasHitBaddie(playerRect, bonus):
+        if playerHasHitBaddie(player.rect, bonus):
             score = score+100
             bonus.remove(b)
 
         # Check if any of the tube have hit the player.
-        if playerHasHitTube(playerRect, Tube):
+        if playerHasHitTube(player.rect, Tube):
             if score > topScore:
                 topScore = score # set new top score
             break
         # chech if any of tube_Haut have hit the player
-        if playerHasHitHaut(playerRect, Tube_Haut):
+        if playerHasHitHaut(player.rect, Tube_Haut):
             if score > topScore:
                 topScore = score
             break
 
         # Check if any of the badegg have hit the player.
-        if playerHasHitBadEgg(playerRect, BadEgg):
+        if playerHasHitBadEgg(player.rect, BadEgg):
             PlayerHitBadEggSound.play()
             for e in BadEgg[:]:
-                if playerHasHitBadEgg(playerRect, BadEgg):
+                if playerHasHitBadEgg(player.rect, BadEgg):
                     BadEgg.remove(e)
             if vie< 2:
                 break
