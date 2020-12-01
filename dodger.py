@@ -1,33 +1,68 @@
 import pygame, random, sys
 from pygame.locals import *
 
-
 WINDOWWIDTH = 900
 WINDOWHEIGHT = 500
 TEXTCOLOR = (0, 0, 0)
 #BACKGROUNDCOLOR = (75, 255, 100) #YELLOW GREEN BLUE
 #FPS = 60
-BONUSMINSIZE = 20
-BONUSMAXSIZE = 40
-BONUSMINSPEED = 1
-BONUSMAXSPEED = 8
-ADDNEWBONUSRATE = 20
-TUBEMINSIZE = 40
-TUBEMAXSIZE = 140
-TUBEMAXSPEED = 4
-TUBEMINSPEED = 4
-ADDNEWTUBERATE = 5000
-BADEGGMINSIZE = 20
-BADEGGMAXSIZE = 40
-BADEGGMINSPEED = 1
-BADEGGMAXSPEED = 8
-ADDNEWBADEGGRATE = 6000
-PLAYERMOVERATE = 5
-Tube_HautMAXSIZE =80
-Tube_HautMINSIZE= 50
-Tube_HautMAXSPEED= 4
-Tube_HautMINSPEED= 4
-ADDNEWTube_HAUTRATE =5000
+
+class Player(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load('Poulet.png')
+        self.rect = self.image.get_rect()
+        self.MOVERATE = 5
+
+player = Player()
+
+class Tube(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load('Tube.png')
+        self.minsize = 40
+        self.maxsize = 140
+        self.minspeed = 4
+        self.maxspeed = 4
+        self.addnewrate = 50
+
+tube = Tube()
+
+class TubeHaut(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.transform.rotate(pygame.image.load("Tube.png"),180)
+        self.minsize = 50
+        self.maxsize = 80
+        self.minspeed = 4
+        self.maxspeed = 4
+        self.addnewrate = 50
+
+tubehaut = TubeHaut()
+
+class Bonus(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load('EGG.png')
+        self.minsize = 20
+        self.maxsize = 40
+        self.minspeed = 1
+        self.maxspeed = 8
+        self.addnewrate = 50
+
+bonus = Bonus()
+
+class Badegg(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load('BadEgg.png')
+        self.minsize = 20
+        self.maxsize = 40
+        self.minspeed = 1
+        self.maxspeed = 8
+        self.addnewrate = 20
+
+badegg = Badegg()
 
 
 def terminate():
@@ -44,8 +79,8 @@ def waitForPlayerToPressKey():
                     terminate()
                 return
 
-def playerHasHitBaddie(playerRect, bonus):
-    for b in bonus:
+def playerHasHitBaddie(playerRect, BONUS):
+    for b in BONUS:
         if player.rect.colliderect(b['rect']):
             return True
     return False
@@ -57,7 +92,7 @@ def playerHasHitTube(playerRect, Tube):
     return False
 
 def playerHasHitHaut(playerRect, Tube_Haut):
-    for h in Tube_Haut:
+    for h in TUBEHaut:
         if playerRect.colliderect(h["rect"]):
             return True
     return False
@@ -75,15 +110,6 @@ def drawText(text, font, surface, x, y):
     surface.blit(textobj, textrect)
 
 
-class Player(pygame.sprite.Sprite):
-    def __init__(self):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load('Poulet.png')
-        self.rect = self.image.get_rect()
-        self.MOVERATE = 5
-
-player = Player()
-
 # Set up pygame, the window, and the mouse cursor.
 pygame.init()
 #mainClock = pygame.time.Clock()
@@ -100,20 +126,13 @@ PlayerHitBadEggSound = pygame.mixer.Sound('Aïe.wav')
 pygame.mixer.music.load('Background.wav')
 
 # Set up images. #todo : ajouter image chasseur(qui tire depuis le fond)/renard/balles
-
-bonusImage = pygame.image.load('EGG.png')
-tube = pygame.image.load('Tube.png').convert_alpha()
-badegg = pygame.image.load('BadEgg.png').convert_alpha()
 Background = pygame.image.load('Background.jpg').convert()
-tube_Haut = pygame.transform.rotate(pygame.image.load("tube.png").convert_alpha(),180)
 GameOverBackground = pygame.image.load('Background-gameover.png')
 StartBackground = pygame.image.load('StartBackground.png')
-#tube du haut = pygame.transform.rotate(pygame.image.load("Tube.png").convert_alpha(),180)
 
 
 # Show the "Start" screen.
 windowSurface.blit(StartBackground, [0, 0])
-#drawText('Chicken Run', font, windowSurface, (WINDOWWIDTH / 3), (WINDOWHEIGHT / 3))
 drawText('Press a key to start.', font, windowSurface, (WINDOWWIDTH / 3) - 30, (WINDOWHEIGHT / 3) + 50)
 pygame.display.update()
 waitForPlayerToPressKey()
@@ -121,10 +140,10 @@ waitForPlayerToPressKey()
 topScore = 0
 while True:
     # Set up the start of the game.
-    bonus = []
-    Tube = []
+    BONUS = []
+    TUBE = []
     BadEgg = []
-    Tube_Haut = []
+    TUBEHaut = []
     score = 0
     vie = 3
     player.rect.topleft = (WINDOWWIDTH / 2, WINDOWHEIGHT - 50)
@@ -133,7 +152,7 @@ while True:
     bonusAddCounter = 0
     TubeAddCounter=0
     BadEggAddCounter = 0
-    Tube_HautAddCounter =0
+    TubeHautAddCounter =0
     pygame.mixer.music.play(-1, 0.0)
     windowSurface.blit(Background, [0, 0])
     pygame.mouse.set_visible(False)
@@ -190,48 +209,49 @@ while True:
         # Add new bonus at the top of the screen, if needed.
         if not reverseCheat and not slowCheat:
             bonusAddCounter += 1
-        if bonusAddCounter == ADDNEWBONUSRATE:
+        if bonusAddCounter == bonus.addnewrate:
             bonusAddCounter = 0
-            bonusSize = random.randint(BONUSMINSIZE, BONUSMAXSIZE)
+            bonusSize = random.randint(bonus.minsize, bonus.maxsize)
             newBonus = {'rect': pygame.Rect(WINDOWWIDTH-bonusSize, random.randint(0, WINDOWWIDTH - bonusSize), bonusSize, bonusSize),
-                        'speed': random.randint(BONUSMINSPEED, BONUSMAXSPEED),
-                        'surface':pygame.transform.scale(bonusImage, (bonusSize, bonusSize)),
+                        'speed': random.randint(bonus.minspeed, bonus.maxspeed),
+                        'surface':pygame.transform.scale(bonus.image, (bonusSize, bonusSize)),
                         }
 
-            bonus.append(newBonus)
+            BONUS.append(newBonus)
 
         #Add new tube
         if not reverseCheat and not slowCheat:
             TubeAddCounter += 1
-        if TubeAddCounter == ADDNEWTUBERATE:
+        if TubeAddCounter == tube.addnewrate:
             TubeAddCounter = 0
-            tubeSize = random.randint(TUBEMINSIZE, TUBEMAXSIZE)
+            tubeSize = random.randint(tube.minsize, tube.maxsize)
             newTube = { 'rect': pygame.Rect(WINDOWWIDTH-tubeSize,WINDOWHEIGHT-tubeSize, tubeSize, tubeSize),
-                        'speed': random.randint(TUBEMINSPEED, TUBEMAXSPEED),
-                        'surface':pygame.transform.scale(tube, (40, tubeSize)),
+                        'speed': random.randint(tube.minspeed, tube.maxspeed),
+                        'surface':pygame.transform.scale(tube.image, (40, tubeSize)),
                         }
-            Tube.append(newTube)
+            TUBE.append(newTube)
+
         #Add new tube_haut
         if not reverseCheat and not slowCheat:
-            Tube_HautAddCounter+= 1
-        if Tube_HautAddCounter == ADDNEWTube_HAUTRATE:
-            Tube_HautAddCounter = 0
-            Tube_HautSize=random.randint(Tube_HautMINSIZE,Tube_HautMAXSIZE)
-            newTube_Haut = {"rect":pygame.Rect(WINDOWWIDTH-Tube_HautSize,-0,Tube_HautSize,Tube_HautSize),
-                        "speed": random.randint(Tube_HautMINSPEED,Tube_HautMAXSPEED),
-                        "surface": pygame.transform.scale(tube_Haut,(Tube_HautSize,Tube_HautSize)),
+            TubeHautAddCounter+= 1
+        if TubeHautAddCounter == tubehaut.addnewrate:
+            TubeHautAddCounter = 0
+            TubeHautSize=random.randint(tubehaut.minsize,tubehaut.maxsize)
+            newTubeHaut = {"rect":pygame.Rect(WINDOWWIDTH-TubeHautSize,-0,TubeHautSize,TubeHautSize),
+                        "speed": random.randint(tubehaut.minspeed,tubehaut.maxspeed),
+                        "surface": pygame.transform.scale(tubehaut.image,(TubeHautSize,TubeHautSize)),
                         }
-            Tube_Haut.append(newTube_Haut)
+            TUBEHaut.append(newTubeHaut)
 
         #Add new badegg
         if not reverseCheat and not slowCheat:
             BadEggAddCounter += 1
-        if BadEggAddCounter == ADDNEWBADEGGRATE:
+        if BadEggAddCounter == badegg.addnewrate:
             BadEggAddCounter = 0
-            BadEggSize = random.randint(BADEGGMINSIZE, BADEGGMAXSIZE)
+            BadEggSize = random.randint(badegg.minsize, badegg.maxsize)
             newBadEgg = {'rect': pygame.Rect(WINDOWWIDTH-BadEggSize, random.randint(0, WINDOWWIDTH - BadEggSize), BadEggSize, BadEggSize),
-                        'speed': random.randint(BADEGGMINSPEED, BADEGGMAXSPEED),
-                        'surface':pygame.transform.scale(badegg, (BadEggSize, BadEggSize)),
+                        'speed': random.randint(badegg.minspeed, badegg.maxspeed),
+                        'surface':pygame.transform.scale(badegg.image, (BadEggSize, BadEggSize)),
                         }
 
             BadEgg.append(newBadEgg)
@@ -246,8 +266,8 @@ while True:
         if moveDown and player.rect.bottom < WINDOWHEIGHT:
             player.rect.move_ip(0, player.MOVERATE)
 
-        # Move the bonus down.
-        for b in bonus:
+        # Move the bonus
+        for b in BONUS:
             if not reverseCheat and not slowCheat:
                 b ['rect'].move_ip(-b['speed'],0 )
             elif reverseCheat:
@@ -255,8 +275,8 @@ while True:
             elif slowCheat:
                 b['rect'].move_ip(1, 0)
 
-        # Move the tubes down.
-        for t in Tube:
+        # Move the tubes
+        for t in TUBE:
             if not reverseCheat and not slowCheat:
                 t['rect'].move_ip(-t['speed'], 0)
             elif reverseCheat:
@@ -264,8 +284,8 @@ while True:
             elif slowCheat:
                 t['rect'].move_ip(1, 0)
 
-        #move the tube_Haut down
-        for h in Tube_Haut:
+        #move the tubeHaut
+        for h in TUBEHaut:
             if not reverseCheat and not slowCheat:
                 h["rect"].move_ip(-h["speed"],0)
             elif reverseCheat:
@@ -273,7 +293,7 @@ while True:
             elif slowCheat:
                 h["rect"].move_ip(1,0)
 
-        # Move the badegg down
+        # Move the badegg
         for e in BadEgg:
             if not reverseCheat and not slowCheat:
                 e['rect'].move_ip(-e['speed'], 0)
@@ -283,18 +303,19 @@ while True:
                 e['rect'].move_ip(1, 0)
 
         # Delete bonus that have fallen past the bottom.
-        for b in bonus[:]:
+        for b in BONUS[:]:
             if -b['rect'].top > WINDOWWIDTH:
-                bonus.remove(b)
+                BONUS.remove(b)
 
         # Delete tubes that have fallen past the bottom.
-        for t in Tube[:]:
+        for t in TUBE[:]:
             if -t['rect'].top > WINDOWWIDTH:
-                Tube.remove(t)
+                TUBE.remove(t)
+
         # Delete tube_haut have fallen past the bottom
-        for h in Tube_Haut[:]:
+        for h in TUBEHaut[:]:
             if -h["rect"].top > WINDOWWIDTH:
-                Tube_Haut.remove(h)
+                TUBEHaut.remove(h)
 
         # Delete badegg that have fallen past the bottom.
         for e in BadEgg[:]:
@@ -308,12 +329,12 @@ while True:
         windowSurface.blit(Background, [0, 0])
 
         # Draw tube
-        for t in Tube:
+        for t in TUBE:
             windowSurface.blit(t["surface"], t['rect'])
         pygame.display.update()
 
         #draw Tube_Haut
-        for h in Tube_Haut:
+        for h in TUBEHaut:
             windowSurface.blit(h["surface"], h["rect"])
         pygame.display.update()
 
@@ -326,7 +347,7 @@ while True:
         windowSurface.blit(player.image, player.rect)
 
         # Draw each bonus.
-        for b in bonus:
+        for b in BONUS:
             windowSurface.blit(b["surface"], b['rect'])
         pygame.display.update()
 
@@ -336,17 +357,18 @@ while True:
         pygame.display.update()
 
         # Check if any of the bonus have hit the player.
-        if playerHasHitBaddie(player.rect, bonus):
+        if playerHasHitBaddie(player.rect, BONUS):
             score = score+100
-            bonus.remove(b)
+            BONUS.remove(b)
 
         # Check if any of the tube have hit the player.
-        if playerHasHitTube(player.rect, Tube):
+        if playerHasHitTube(player.rect, TUBE):
             if score > topScore:
                 topScore = score # set new top score
             break
+
         # chech if any of tube_Haut have hit the player
-        if playerHasHitHaut(player.rect, Tube_Haut):
+        if playerHasHitHaut(player.rect, TUBEHaut):
             if score > topScore:
                 topScore = score
             break
