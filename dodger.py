@@ -125,7 +125,7 @@ gameOverSound = pygame.mixer.Sound('GameOver.wav')
 PlayerHitBadEggSound = pygame.mixer.Sound('Aïe.wav')
 pygame.mixer.music.load('Background.wav')
 
-# Set up images. #todo : ajouter image chasseur(qui tire depuis le fond)/renard/balles
+# Set up images.
 Background = pygame.image.load('Background.jpg').convert()
 GameOverBackground = pygame.image.load('Background-gameover.png')
 StartBackground = pygame.image.load('StartBackground.png')
@@ -358,7 +358,12 @@ while True:
 
         # Check if any of the bonus have hit the player.
         if playerHasHitBaddie(player.rect, BONUS):
-            score = score+100
+            bonuss=random.choice([1, 100])
+            if bonuss==100:
+                score=score+bonuss
+            else :
+                vie=vie+bonuss
+
             BONUS.remove(b)
 
         # Check if any of the tube have hit the player.
@@ -367,7 +372,7 @@ while True:
                 topScore = score # set new top score
             break
 
-        # chech if any of tube_Haut have hit the player
+        # chech if any of tube Haut have hit the player
         if playerHasHitHaut(player.rect, TUBEHaut):
             if score > topScore:
                 topScore = score
@@ -379,7 +384,7 @@ while True:
             for e in BadEgg[:]:
                 if playerHasHitBadEgg(player.rect, BadEgg):
                     BadEgg.remove(e)
-            if vie< 2:
+            if vie < 2:
                 if score > topScore:
                     topScore=score
                 break
