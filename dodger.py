@@ -5,8 +5,7 @@ import os
 WINDOWWIDTH = 900
 WINDOWHEIGHT = 500
 TEXTCOLOR = (0, 0, 0)
-#BACKGROUNDCOLOR = (75, 255, 100) #YELLOW GREEN BLUE
-#FPS = 60
+
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
@@ -20,11 +19,11 @@ player = Player()
 class Tube(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load('Tube.png')
-        self.minsize = 40
-        self.maxsize = 140
-        self.minspeed = 4
-        self.maxspeed = 4
+        self.image = pygame.image.load('Arbre.png')
+        self.minsize = 100
+        self.maxsize = 200
+        self.minspeed = 2
+        self.maxspeed = 2
         self.addnewrate = 50
 
 tube = Tube()
@@ -32,11 +31,11 @@ tube = Tube()
 class TubeHaut(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.transform.rotate(pygame.image.load("Tube.png"),180)
-        self.minsize = 50
-        self.maxsize = 80
-        self.minspeed = 4
-        self.maxspeed = 4
+        self.image = pygame.transform.rotate(pygame.image.load("Thunder.png"),180)
+        self.minsize = 80
+        self.maxsize = 150
+        self.minspeed = 2
+        self.maxspeed = 2
         self.addnewrate = 50
 
 tubehaut = TubeHaut()
@@ -113,9 +112,9 @@ def drawText(text, font, surface, x, y):
 
 # Set up pygame, the window, and the mouse cursor.
 pygame.init()
-#mainClock = pygame.time.Clock()
+mainClock = pygame.time.Clock()
 windowSurface = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
-#pygame.display.set_caption('Dodger') #Remplacer dodger par chicken run
+pygame.display.set_caption('Chicken run')
 pygame.mouse.set_visible(True)
 
 # Set up the fonts.
@@ -124,19 +123,13 @@ font = pygame.font.SysFont(None, 48)
 # Set up sounds.
 gameOverSound = pygame.mixer.Sound('GameOver.wav')
 PlayerHitBadEggSound = pygame.mixer.Sound('Aïe.wav')
+PlayerHitGiftEggSound = pygame.mixer.Sound('Happy.wav')
 pygame.mixer.music.load('Background.wav')
 
 # Set up images.
-Background = pygame.image.load('Background.jpg').convert()
+Background = pygame.image.load('Background.png').convert()
 GameOverBackground = pygame.image.load('Background-gameover.png')
 StartBackground = pygame.image.load('StartBackground.png')
-
-
-# Show the "Start" screen.
-windowSurface.blit(StartBackground, [0, 0])
-drawText('Press a key to start.', font, windowSurface, (WINDOWWIDTH / 3) - 30, (WINDOWHEIGHT / 3) + 50)
-pygame.display.update()
-waitForPlayerToPressKey()
 
 # Set up start button
 class button():
@@ -156,7 +149,7 @@ class button():
         pygame.draw.rect(windowSurface, self.color, (self.x, self.y, self.width, self.height), 0)
 
         if self.text != '':
-            font = pygame.font.SysFont('comicsansms', 45)
+            font = pygame.font.SysFont('comicsansms', 40)
             text = font.render(self.text, 1, (0, 0, 0))
             windowSurface.blit(text, (
                 self.x + (self.width / 2 - text.get_width() / 2), self.y + (self.height / 2 - text.get_height() / 2)))
@@ -173,12 +166,12 @@ class button():
 
 #Show the start screen
 Run = True
-greenButton = button((0, 0, 0), 370, 220, 160, 70, 'START')
-#Howtoplaybutton = button((0,0,0), 280, 100, 50, 100, 'How to play')
+greenButton = button((0, 0, 0), 370, 220, 145, 60, 'START')
+Howtoplaybutton = button((0, 0, 0), 40, 400, 220, 52, 'how to play')
 while Run:
     windowSurface.blit(StartBackground, [0, 0])
     greenButton.draw(windowSurface, (0, 0, 0))
-    #Howtoplaybutton.draw(windowSurface, (0, 0, 0))
+    Howtoplaybutton.draw(windowSurface, (0, 0, 0))
     pygame.display.update()
 
     for event in pygame.event.get():
@@ -189,26 +182,26 @@ while Run:
             pygame.quit()
             quit()
 
-        #if event.type == pygame.MOUSEMOTION:
-            #if Howtoplaybutton.isOver(pos):
-             #   Howtoplaybutton.color = (100,100,100)
-            #else:
-             #   Howtoplaybutton.color = (200,200,200)
+        if event.type == pygame.MOUSEMOTION:
+            if Howtoplaybutton.isOver(pos):
+                Howtoplaybutton.color = (150, 150, 150)
+            else:
+                Howtoplaybutton.color = (10, 190, 255)
 
-      #  if event.type == pygame.MOUSEBUTTONDOWN:
-       #     if Howtoplaybutton.isOver(pos):
-        #        windowSurface.blit(GameOverBackground, [0, 0])
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if Howtoplaybutton.isOver(pos):
+                windowSurface.blit(GameOverBackground, [0, 0])
 
         if event.type == pygame.MOUSEMOTION:
             if greenButton.isOver(pos):
-                greenButton.color = (0, 0, 0)
+                greenButton.color = (150, 150, 150)
             else:
                 greenButton.color = (255, 255, 255)
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             if greenButton.isOver(pos):
 
-                #start of the game
+                # start of the game
                 topScore = 0
                 while True:
                     # Set up the start of the game.
@@ -236,42 +229,6 @@ while Run:
                             if event.type == QUIT:
                                 terminate()
 
-                            #if event.type == KEYDOWN:
-                             #   if event.key == K_z:
-                              #      reverseCheat = True
-                              #  if event.key == K_x:
-                              #      slowCheat = True
-                               # if event.key == K_LEFT or event.key == K_a:
-                               #     moveRight = False
-                                #    moveLeft = True
-                                #if event.key == K_RIGHT or event.key == K_d:
-                               #     moveLeft = False
-                                #    moveRight = True
-                                #if event.key == K_UP or event.key == K_w:
-                                 #   moveDown = False
-                                  #  moveUp = True
-                                #if event.key == K_DOWN or event.key == K_s:
-                                 #   moveUp = False
-                                  #  moveDown = True
-
-                            #if event.type == KEYUP:
-                             #   if event.key == K_z:
-                              #      reverseCheat = False
-                                #    score = 0
-                                #if event.key == K_x:
-                                 #   slowCheat = False
-                                  #  score = 0
-                                #if event.key == K_ESCAPE:
-                                 #       terminate()
-
-                               # if event.key == K_LEFT or event.key == K_a:
-                                   # moveLeft = False
-                                #if event.key == K_RIGHT or event.key == K_d:
-                                    #moveRight = False
-                                #if event.key == K_UP or event.key == K_w:
-                                 #   moveUp = False
-                                #if event.key == K_DOWN or event.key == K_s:
-                                 #   moveDown = False
 
                             if event.type == MOUSEMOTION:
                                 # If the mouse moves, move the player where to the cursor.
@@ -432,11 +389,12 @@ while Run:
 
                         # Check if any of the bonus have hit the player.
                         if playerHasHitBaddie(player.rect, BONUS):
-                            bonuss=random.choice([1, 100])
-                            if bonuss==100:
-                                score=score+bonuss
-                            else :
-                                vie=vie+bonuss
+                            PlayerHitGiftEggSound.play()
+                            bonuss = random.choice([1, 100])
+                            if bonuss == 100:
+                                score = score+bonuss
+                            else:
+                                vie = vie+bonuss
 
                             BONUS.remove(b)
 
@@ -481,15 +439,15 @@ while Run:
                                 vie=vie-1
 
 
-                        # Stop the game and show the "Game Over" screen.
+                    # Stop the game and show the "Game Over" screen.
                     pygame.mixer.music.stop()
                     gameOverSound.play()
 
                     windowSurface.blit(GameOverBackground, [0, 0])
                     pygame.mouse.set_visible(True)
 
-                    drawText('GAME OVER', font, windowSurface, (WINDOWWIDTH / 3), (WINDOWHEIGHT / 3))
-                    drawText('Press a key to play again.', font, windowSurface, (WINDOWWIDTH / 3) - 80, (WINDOWHEIGHT / 3) + 50)
+                    drawText('GAME OVER', font, windowSurface, 370, 220)
+                    drawText('Press a key to play again.', font, windowSurface, 280, 280)
                     pygame.display.update()
                     waitForPlayerToPressKey()
 
