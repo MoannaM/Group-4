@@ -1,4 +1,6 @@
-import pygame, random, sys
+import pygame
+import random
+import sys
 from pygame.locals import *
 import os
 
@@ -14,9 +16,11 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.MOVERATE = 5
 
+
 player = Player()
 
-class Tube(pygame.sprite.Sprite):
+
+class Arbre(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.image.load('Arbre.png')
@@ -26,19 +30,23 @@ class Tube(pygame.sprite.Sprite):
         self.maxspeed = 2
         self.addnewrate = 50
 
-tube = Tube()
 
-class TubeHaut(pygame.sprite.Sprite):
+arbre = Arbre()
+
+
+class Thunder(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.transform.rotate(pygame.image.load("Thunder.png"),180)
+        self.image = pygame.transform.rotate(pygame.image.load("Thunder.png"), 180)
         self.minsize = 80
         self.maxsize = 150
         self.minspeed = 2
         self.maxspeed = 2
         self.addnewrate = 50
 
-tubehaut = TubeHaut()
+
+thunder = Thunder()
+
 
 class Bonus(pygame.sprite.Sprite):
     def __init__(self):
@@ -50,7 +58,9 @@ class Bonus(pygame.sprite.Sprite):
         self.maxspeed = 8
         self.addnewrate = 50
 
+
 bonus = Bonus()
+
 
 class Badegg(pygame.sprite.Sprite):
     def __init__(self):
@@ -62,6 +72,7 @@ class Badegg(pygame.sprite.Sprite):
         self.maxspeed = 8
         self.addnewrate = 20
 
+
 badegg = Badegg()
 
 
@@ -69,41 +80,47 @@ def terminate():
     pygame.quit()
     sys.exit()
 
-def waitForPlayerToPressKey():
+
+def wait_for_player_to_pressKey():
     while True:
         for event in pygame.event.get():
             if event.type == QUIT:
                 terminate()
             if event.type == KEYDOWN:
-                if event.key == K_ESCAPE: # Pressing ESC quits.
+                if event.key == K_ESCAPE:  # Pressing ESC quits.
                     terminate()
                 return
 
-def playerHasHitBaddie(playerRect, BONUS):
+
+def player_has_hit_baddie(playerRect, BONUS):
     for b in BONUS:
         if player.rect.colliderect(b['rect']):
             return True
     return False
 
-def playerHasHitTube(playerRect, Tube):
-    for t in Tube:
+
+def player_has_hit_arbre(playerRect, Arbre):
+    for t in Arbre:
         if playerRect.colliderect(t['rect']):
             return True
     return False
 
-def playerHasHitHaut(playerRect, Tube_Haut):
-    for h in TUBEHaut:
+
+def player_has_hit_thunder(playerRect, Thunder):
+    for h in Thunder:
         if playerRect.colliderect(h["rect"]):
             return True
     return False
 
-def playerHasHitBadEgg(playerRect, BadEgg):
+
+def player_has_hit_badEgg(playerRect, BadEgg):
     for e in BadEgg:
         if playerRect.colliderect(e['rect']):
             return True
     return False
 
-def drawText(text, font, surface, x, y):
+
+def draw_text(text, font, surface, x, y):
     textobj = font.render(text, 1, TEXTCOLOR)
     textrect = textobj.get_rect()
     textrect.topleft = (x, y)
@@ -132,7 +149,9 @@ GameOverBackground = pygame.image.load('Background-gameover.png')
 StartBackground = pygame.image.load('StartBackground.png')
 
 # Set up start button
-class button():
+
+
+class Button:
     def __init__(self, color, x, y, width, height, text=''):
         self.color = color
         self.x = x
@@ -154,20 +173,19 @@ class button():
             windowSurface.blit(text, (
                 self.x + (self.width / 2 - text.get_width() / 2), self.y + (self.height / 2 - text.get_height() / 2)))
 
-
-    def isOver(self, pos):
+    def is_over(self, pos):
         # Pos is the mouse position or a tuple of (x,y) coordinates
-        if pos[0] > self.x and pos[0] < self.x + self.width:
-            if pos[1] > self.y and pos[1] < self.y + self.height:
+        if pos[0] > self.x < self.x + self.width:
+            if pos[1] > self.y < self.y + self.height:
                 return True
 
         return False
 
 
-#Show the start screen
+# Show the start screen
 Run = True
-greenButton = button((0, 0, 0), 370, 220, 145, 60, 'START')
-Howtoplaybutton = button((0, 0, 0), 40, 400, 220, 52, 'how to play')
+greenButton = Button((0, 0, 0), 370, 220, 145, 60, 'START')
+Howtoplaybutton = Button((0, 0, 0), 40, 400, 220, 52, 'how to play')
 while Run:
     windowSurface.blit(StartBackground, [0, 0])
     greenButton.draw(windowSurface, (0, 0, 0))
@@ -183,52 +201,51 @@ while Run:
             quit()
 
         if event.type == pygame.MOUSEMOTION:
-            if Howtoplaybutton.isOver(pos):
+            if Howtoplaybutton.is_over(pos):
                 Howtoplaybutton.color = (150, 150, 150)
             else:
                 Howtoplaybutton.color = (10, 190, 255)
 
         if event.type == pygame.MOUSEBUTTONDOWN:
-            if Howtoplaybutton.isOver(pos):
+            if Howtoplaybutton.is_over(pos):
                 windowSurface.blit(GameOverBackground, [0, 0])
 
         if event.type == pygame.MOUSEMOTION:
-            if greenButton.isOver(pos):
+            if greenButton.is_over(pos):
                 greenButton.color = (150, 150, 150)
             else:
                 greenButton.color = (255, 255, 255)
 
         if event.type == pygame.MOUSEBUTTONDOWN:
-            if greenButton.isOver(pos):
+            if greenButton.is_over(pos):
 
                 # start of the game
                 topScore = 0
                 while True:
                     # Set up the start of the game.
                     BONUS = []
-                    TUBE = []
+                    Arbre = []
                     BadEgg = []
-                    TUBEHaut = []
+                    Thunder = []
                     score = 0
                     vie = 3
                     player.rect.topleft = (WINDOWWIDTH / 2, WINDOWHEIGHT - 50)
                     moveLeft = moveRight = moveUp = moveDown = False
                     reverseCheat = slowCheat = False
                     bonusAddCounter = 0
-                    TubeAddCounter=0
+                    ArbreAddCounter = 0
                     BadEggAddCounter = 0
-                    TubeHautAddCounter =0
+                    ThunderAddCounter = 0
                     pygame.mixer.music.play(-1, 0.0)
                     windowSurface.blit(Background, [0, 0])
                     pygame.mouse.set_visible(False)
 
-                    while True: # The game loop runs while the game part is playing.
-                        score += 1 # Increase score.
+                    while True:  # The game loop runs while the game part is playing.
+                        score += 1  # Increase score.
 
                         for event in pygame.event.get():
                             if event.type == QUIT:
                                 terminate()
-
 
                             if event.type == MOUSEMOTION:
                                 # If the mouse moves, move the player where to the cursor.
@@ -243,45 +260,45 @@ while Run:
                             bonusSize = random.randint(bonus.minsize, bonus.maxsize)
                             newBonus = {'rect': pygame.Rect(WINDOWWIDTH-bonusSize, random.randint(0, WINDOWWIDTH - bonusSize), bonusSize, bonusSize),
                                         'speed': random.randint(bonus.minspeed, bonus.maxspeed),
-                                        'surface':pygame.transform.scale(bonus.image, (bonusSize, bonusSize)),
+                                        'surface': pygame.transform.scale(bonus.image, (bonusSize, bonusSize)),
                                         }
 
                             BONUS.append(newBonus)
 
-                        #Add new tube
+                        # Add new arbre
                         if not reverseCheat and not slowCheat:
-                            TubeAddCounter += 1
-                        if TubeAddCounter == tube.addnewrate:
-                            TubeAddCounter = 0
-                            tubeSize = random.randint(tube.minsize, tube.maxsize)
-                            newTube = { 'rect': pygame.Rect(WINDOWWIDTH-tubeSize,WINDOWHEIGHT-tubeSize, tubeSize, tubeSize),
-                                        'speed': random.randint(tube.minspeed, tube.maxspeed),
-                                        'surface':pygame.transform.scale(tube.image, (40, tubeSize)),
-                                        }
-                            TUBE.append(newTube)
+                            ArbreAddCounter += 1
+                        if ArbreAddCounter == arbre.addnewrate:
+                            ArbreAddCounter = 0
+                            ArbreSize = random.randint(arbre.minsize, arbre.maxsize)
+                            newTube = {'rect': pygame.Rect(WINDOWWIDTH-ArbreSize, WINDOWHEIGHT-ArbreSize, ArbreSize, ArbreSize),
+                                       'speed': random.randint(arbre.minspeed, arbre.maxspeed),
+                                       'surface': pygame.transform.scale(arbre.image, (40, ArbreSize)),
+                                       }
+                            Arbre.append(newTube)
 
-                        #Add new tube_haut
+                        # Add new thunder
                         if not reverseCheat and not slowCheat:
-                            TubeHautAddCounter+= 1
-                        if TubeHautAddCounter == tubehaut.addnewrate:
-                            TubeHautAddCounter = 0
-                            TubeHautSize=random.randint(tubehaut.minsize,tubehaut.maxsize)
-                            newTubeHaut = {"rect":pygame.Rect(WINDOWWIDTH-TubeHautSize,-0,TubeHautSize,TubeHautSize),
-                                        "speed": random.randint(tubehaut.minspeed,tubehaut.maxspeed),
-                                        "surface": pygame.transform.scale(tubehaut.image,(TubeHautSize,TubeHautSize)),
-                                        }
-                            TUBEHaut.append(newTubeHaut)
+                            ThunderAddCounter += 1
+                        if ThunderAddCounter == thunder.addnewrate:
+                            ThunderAddCounter = 0
+                            ThunderSize = random.randint(thunder.minsize, thunder.maxsize)
+                            newThunder = {"rect": pygame.Rect(WINDOWWIDTH-ThunderSize, -0, ThunderSize, ThunderSize),
+                                          "speed": random.randint(thunder.minspeed, thunder.maxspeed),
+                                          "surface": pygame.transform.scale(thunder.image, (ThunderSize, ThunderSize)),
+                                          }
+                            Thunder.append(newThunder)
 
-                        #Add new badegg
+                        # Add new badegg
                         if not reverseCheat and not slowCheat:
                             BadEggAddCounter += 1
                         if BadEggAddCounter == badegg.addnewrate:
                             BadEggAddCounter = 0
                             BadEggSize = random.randint(badegg.minsize, badegg.maxsize)
                             newBadEgg = {'rect': pygame.Rect(WINDOWWIDTH-BadEggSize, random.randint(0, WINDOWWIDTH - BadEggSize), BadEggSize, BadEggSize),
-                                        'speed': random.randint(badegg.minspeed, badegg.maxspeed),
-                                        'surface':pygame.transform.scale(badegg.image, (BadEggSize, BadEggSize)),
-                                        }
+                                         'speed': random.randint(badegg.minspeed, badegg.maxspeed),
+                                         'surface': pygame.transform.scale(badegg.image, (BadEggSize, BadEggSize)),
+                                         }
 
                             BadEgg.append(newBadEgg)
 
@@ -298,14 +315,14 @@ while Run:
                         # Move the bonus
                         for b in BONUS:
                             if not reverseCheat and not slowCheat:
-                                b ['rect'].move_ip(-b['speed'],0 )
+                                b['rect'].move_ip(-b['speed'], 0)
                             elif reverseCheat:
                                 b['rect'].move_ip(-5, 0)
                             elif slowCheat:
                                 b['rect'].move_ip(1, 0)
 
-                        # Move the tubes
-                        for t in TUBE:
+                        # Move the arbre
+                        for t in Arbre:
                             if not reverseCheat and not slowCheat:
                                 t['rect'].move_ip(-t['speed'], 0)
                             elif reverseCheat:
@@ -313,14 +330,14 @@ while Run:
                             elif slowCheat:
                                 t['rect'].move_ip(1, 0)
 
-                        #move the tubeHaut
-                        for h in TUBEHaut:
+                        # move the thunder
+                        for h in Thunder:
                             if not reverseCheat and not slowCheat:
-                                h["rect"].move_ip(-h["speed"],0)
+                                h["rect"].move_ip(-h["speed"], 0)
                             elif reverseCheat:
-                                h["rect"].move_ip(-5,0)
+                                h["rect"].move_ip(-5, 0)
                             elif slowCheat:
-                                h["rect"].move_ip(1,0)
+                                h["rect"].move_ip(1, 0)
 
                         # Move the badegg
                         for e in BadEgg:
@@ -336,15 +353,15 @@ while Run:
                             if -b['rect'].top > WINDOWWIDTH:
                                 BONUS.remove(b)
 
-                        # Delete tubes that have fallen past the bottom.
-                        for t in TUBE[:]:
+                        # Delete arbre that have fallen past the bottom.
+                        for t in Arbre[:]:
                             if -t['rect'].top > WINDOWWIDTH:
-                                TUBE.remove(t)
+                                Arbre.remove(t)
 
-                        # Delete tube_haut have fallen past the bottom
-                        for h in TUBEHaut[:]:
+                        # Delete thunder have fallen past the bottom
+                        for h in Thunder[:]:
                             if -h["rect"].top > WINDOWWIDTH:
-                                TUBEHaut.remove(h)
+                                Thunder.remove(h)
 
                         # Delete badegg that have fallen past the bottom.
                         for e in BadEgg[:]:
@@ -352,26 +369,26 @@ while Run:
                                 BadEgg.remove(e)
 
                         # Draw the game world on the window.
-                        #windowSurface.fill(BACKGROUNDCOLOR)
+                        # windowSurface.fill(BACKGROUNDCOLOR)
 
                         # Background game
                         windowSurface.blit(Background, [0, 0])
 
-                        # Draw tube
-                        for t in TUBE:
+                        # Draw arbre
+                        for t in Arbre:
                             windowSurface.blit(t["surface"], t['rect'])
                         pygame.display.update()
 
-                        #draw Tube_Haut
-                        for h in TUBEHaut:
+                        # draw Thunder
+                        for h in Thunder:
                             windowSurface.blit(h["surface"], h["rect"])
                         pygame.display.update()
 
                         # Draw the score and top score.
-                        fichier = open("data.txt","r")
-                        drawText('Score: %s' % (score), font, windowSurface, 10, 0)
-                        drawText('Top Score: %s' % (fichier.read()), font, windowSurface, 10, 40)
-                        drawText("vie: %s" % (vie), font, windowSurface, 10, 80)
+                        fichier = open("data.txt", "r")
+                        draw_text('Score: %s' % score, font, windowSurface, 10, 0)
+                        draw_text('Top Score: %s' % (fichier.read()), font, windowSurface, 10, 40)
+                        draw_text("vie: %s" % vie, font, windowSurface, 10, 80)
                         fichier.close()
 
                         # Draw the player's rectangle.
@@ -388,7 +405,7 @@ while Run:
                         pygame.display.update()
 
                         # Check if any of the bonus have hit the player.
-                        if playerHasHitBaddie(player.rect, BONUS):
+                        if player_has_hit_baddie(player.rect, BONUS):
                             PlayerHitGiftEggSound.play()
                             bonuss = random.choice([1, 100])
                             if bonuss == 100:
@@ -398,10 +415,10 @@ while Run:
 
                             BONUS.remove(b)
 
-                        # Check if any of the tube have hit the player.
-                        if playerHasHitTube(player.rect, TUBE):
+                        # Check if any of the arbre have hit the player.
+                        if player_has_hit_arbre(player.rect, Arbre):
                             if score > topScore:
-                                topScore = score # set new top score
+                                topScore = score  # set new top score
                                 os.remove("data.txt")
                                 fichier = open("data.txt", "w")
                                 topscore = str(topScore)
@@ -409,8 +426,8 @@ while Run:
                                 fichier.close()
                             break
 
-                        # chech if any of tube Haut have hit the player
-                        if playerHasHitHaut(player.rect, TUBEHaut):
+                        # chech if any of thunder have hit the player
+                        if player_has_hit_thunder(player.rect, Thunder):
                             if score > topScore:
                                 topScore = score
                                 os.remove("data.txt")
@@ -421,23 +438,22 @@ while Run:
                             break
 
                         # Check if any of the badegg have hit the player.
-                        if playerHasHitBadEgg(player.rect, BadEgg):
+                        if player_has_hit_badEgg(player.rect, BadEgg):
                             PlayerHitBadEggSound.play()
                             for e in BadEgg[:]:
-                                if playerHasHitBadEgg(player.rect, BadEgg):
+                                if player_has_hit_badEgg(player.rect, BadEgg):
                                     BadEgg.remove(e)
                             if vie < 2:
                                 if score > topScore:
-                                    topScore=score
+                                    topScore = score
                                     os.remove("data.txt")
-                                    fichier = open("data.txt","w")
+                                    fichier = open("data.txt", "w")
                                     topscore = str(topScore)
                                     fichier.write(topscore)
                                     fichier.close()
                                 break
                             else:
-                                vie=vie-1
-
+                                vie = vie-1
 
                     # Stop the game and show the "Game Over" screen.
                     pygame.mixer.music.stop()
@@ -446,9 +462,9 @@ while Run:
                     windowSurface.blit(GameOverBackground, [0, 0])
                     pygame.mouse.set_visible(True)
 
-                    drawText('GAME OVER', font, windowSurface, 370, 220)
-                    drawText('Press a key to play again.', font, windowSurface, 280, 280)
+                    draw_text('GAME OVER', font, windowSurface, 370, 220)
+                    draw_text('Press a key to play again.', font, windowSurface, 280, 280)
                     pygame.display.update()
-                    waitForPlayerToPressKey()
+                    wait_for_player_to_pressKey()
 
                     gameOverSound.stop()
