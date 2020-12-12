@@ -19,7 +19,6 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.MOVERATE = 4
 
-
 player = Player()
 
 
@@ -45,7 +44,7 @@ class Thunder(pygame.sprite.Sprite):
         self.maxsize = 150
         self.minspeed = 2
         self.maxspeed = 2
-        self.addnewrate = 50
+        self.addnewrate = 130
 
 
 thunder = Thunder()
@@ -138,7 +137,7 @@ pygame.display.set_caption('Chicken run')
 pygame.mouse.set_visible(True)
 
 # Set up the fonts.
-font = pygame.font.SysFont(None, 48)
+font = pygame.font.SysFont('ComicSansMs', 35)
 
 # Set up sounds.
 gameOverSound = pygame.mixer.Sound('GameOver.wav')
@@ -154,8 +153,6 @@ HowToPlayBackground = pygame.image.load('How-to-play.png')
 
 
 # Set up start button
-
-
 class Button:
     def __init__(self, color, x, y, width, height, text=''):
         self.color = color
@@ -405,7 +402,7 @@ def play():
                     fichier.close()
                 break
 
-            # chech if any of thunder have hit the player
+            # Check if any of thunder have hit the player
             if player_has_hit_thunder(player.rect, Thunder):
                 if score > topScore:
                     topScore = score
@@ -448,8 +445,8 @@ def play():
         windowSurface.blit(GameOverBackground, [0, 0])
         pygame.mouse.set_visible(True)
 
-        draw_text('GAME OVER', font, windowSurface, 370, 220)
-        draw_text('Press a key to play again.', font, windowSurface, 280, 280)
+        draw_text('GAME OVER', font, windowSurface, 360, 210)
+        draw_text('Press a key to play again.', font, windowSurface, 270, 270)
         pygame.display.update()
         wait_for_player_to_pressKey()
 
@@ -457,13 +454,12 @@ def play():
 
 # Show the start screen
 Run = True
-greenButton = Button((0, 0, 0), 370, 220, 145, 60, 'START')
+StartButton = Button((0, 0, 0), 370, 220, 145, 60, 'START')
 HowToPlayButton = Button((0, 0, 0), 40, 400, 220, 52, 'how to play')
-BackButton = Button((10, 190, 255), 40, 100, 220, 52, 'Retour')
 
 while Run:
     windowSurface.blit(StartBackground, [0, 0])
-    greenButton.draw(windowSurface, (0, 0, 0))
+    StartButton.draw(windowSurface, (0, 0, 0))
     HowToPlayButton.draw(windowSurface, (0, 0, 0))
     pygame.display.flip()
 
@@ -484,22 +480,17 @@ while Run:
             if HowToPlayButton.is_over(pos):
                 while True:
                     windowSurface.blit(HowToPlayBackground, [0, 0])
-                    BackButton.draw(windowSurface, (0, 0, 0))
                     pygame.display.flip()
                     pygame.time.wait(10000)
                     play()
 
 
-        # if event.type == pygame.MOUSEBUTTONDOWN:
-        #    if BackButton.is_over(pos):
-        #         play()
-
         if event.type == pygame.MOUSEMOTION:
-            if greenButton.is_over(pos):
-                greenButton.color = (150, 150, 150)
+            if StartButton.is_over(pos):
+                StartButton.color = (150, 150, 150)
             else:
-                greenButton.color = (255, 255, 255)
+                StartButton.color = (255, 255, 255)
 
         if event.type == pygame.MOUSEBUTTONDOWN:
-            if greenButton.is_over(pos):
+            if StartButton.is_over(pos):
                 play()
