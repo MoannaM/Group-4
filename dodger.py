@@ -439,18 +439,44 @@ def play():
             fpsClock.tick(FPS)
 
         # Stop the game and show the "Game Over" screen.
-        pygame.mixer.music.stop()
-        gameOverSound.play()
+        GameOver = True
+        GameOverButton = Button((0, 0, 0), 370, 250, 200, 55, 'Play Again')
 
-        windowSurface.blit(GameOverBackground, [0, 0])
-        pygame.mouse.set_visible(True)
+        while GameOver :
+            GameOverButton.draw(windowSurface, (0, 0, 0))
+            pygame.display.flip()
 
-        draw_text('GAME OVER', font, windowSurface, 360, 210)
-        draw_text('Press a key to play again.', font, windowSurface, 270, 270)
-        pygame.display.update()
-        wait_for_player_to_pressKey()
+            pygame.mixer.music.stop()
+            gameOverSound.play()
 
-        gameOverSound.stop()
+            windowSurface.blit(GameOverBackground, [0, 0])
+            pygame.mouse.set_visible(True)
+
+            draw_text('GAME OVER', font, windowSurface, 365, 180)
+            #draw_text('Press a key to play again.', font, windowSurface, 270, 270)
+            #pygame.display.update()
+            #wait_for_player_to_pressKey()
+
+            gameOverSound.stop()
+
+            for event in pygame.event.get():
+                pos = pygame.mouse.get_pos()
+                if event.type == pygame.QUIT:
+                    run = False
+                    pygame.quit()
+                    quit()
+
+                if event.type == pygame.MOUSEMOTION:
+                    if GameOverButton.is_over(pos):
+                        GameOverButton.color = (150, 150, 150)
+                    else:
+                        GameOverButton.color = (150, 180, 150)
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if GameOverButton.is_over(pos):
+                        play()
+
+
 
 # Show the start screen
 Run = True
