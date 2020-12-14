@@ -221,6 +221,10 @@ def play():
             # Add new bonus at the top of the screen, if needed.
             if not reverseCheat and not slowCheat:
                 bonusAddCounter += 1
+            if score>1000:
+                bonus.addnewrate=100
+            if score>2000:
+                bonus.addnewrate=200
             if bonusAddCounter == bonus.addnewrate:
                 bonusAddCounter = 0
                 bonusSize = random.randint(bonus.minsize, bonus.maxsize)
