@@ -186,7 +186,9 @@ class Button:
 
 def play():
     # start of the game
-    topScore = 0
+    fichier = open("data.txt", "r")
+    topscore = int(fichier.read())
+    fichier.close()
     while True:
         # Set up the start of the game.
         BonusCollection = []
