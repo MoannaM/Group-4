@@ -187,7 +187,7 @@ class Button:
 def play():
     # start of the game
     fichier = open("data.txt", "r")
-    topscore = int(fichier.read())
+    topScore = int(fichier.read())
     fichier.close()
     while True:
         # Set up the start of the game.
@@ -223,10 +223,10 @@ def play():
             # Add new bonus at the top of the screen, if needed.
             if not reverseCheat and not slowCheat:
                 bonusAddCounter += 1
-            if score>1000:
-                bonus.addnewrate=100
-            if score>2000:
-                bonus.addnewrate=200
+            if score > 1000:
+                bonus.addnewrate = 100
+            if score > 2000:
+                bonus.addnewrate = 200
             if bonusAddCounter == bonus.addnewrate:
                 bonusAddCounter = 0
                 bonusSize = random.randint(bonus.minsize, bonus.maxsize)
@@ -448,7 +448,7 @@ def play():
         GameOver = True
         GameOverButton = Button((0, 0, 0), 370, 250, 200, 55, 'Play Again')
 
-        while GameOver :
+        while GameOver:
             GameOverButton.draw(windowSurface, (0, 0, 0))
             pygame.display.flip()
 
