@@ -28,8 +28,7 @@ class Arbre(pygame.sprite.Sprite):
         self.image = pygame.image.load('Arbre.png')
         self.minsize = 100
         self.maxsize = 200
-        self.minspeed = 2
-        self.maxspeed = 2
+        self.speed = 2
         self.addnewrate = 50
 
 
@@ -42,8 +41,7 @@ class Thunder(pygame.sprite.Sprite):
         self.image = pygame.transform.rotate(pygame.image.load("Thunder.png"), 180)
         self.minsize = 80
         self.maxsize = 150
-        self.minspeed = 2
-        self.maxspeed = 2
+        self.speed = 2
         self.addnewrate = 130
 
 
@@ -246,7 +244,7 @@ def play():
                 ArbreAddCounter = 0
                 ArbreSize = random.randint(arbre.minsize, arbre.maxsize)
                 newTube = {'rect': pygame.Rect(WINDOWWIDTH, WINDOWHEIGHT - ArbreSize, ArbreSize, ArbreSize),
-                           'speed': random.randint(arbre.minspeed, arbre.maxspeed),
+                           'speed': arbre.speed,
                            'surface': pygame.transform.scale(arbre.image, (40, ArbreSize)),
                            }
                 TreeCollection.append(newTube)
@@ -258,7 +256,7 @@ def play():
                 ThunderAddCounter = 0
                 ThunderSize = random.randint(thunder.minsize, thunder.maxsize)
                 newThunder = {"rect": pygame.Rect(WINDOWWIDTH, -0, ThunderSize, ThunderSize),
-                              "speed": random.randint(thunder.minspeed, thunder.maxspeed),
+                              "speed": thunder.speed,
                               "surface": pygame.transform.scale(thunder.image, (ThunderSize, ThunderSize)),
                               }
                 Thunder.append(newThunder)
