@@ -3,6 +3,7 @@ import random
 import sys
 from pygame.locals import *
 import os
+from button import Button
 
 FPS = 60
 fpsClock = pygame.time.Clock()
@@ -10,6 +11,12 @@ fpsClock = pygame.time.Clock()
 WINDOWWIDTH = 900
 WINDOWHEIGHT = 500
 TEXTCOLOR = (0, 0, 0)
+
+
+# création class game
+class Game:
+    def __init__(self):
+        self.player = Player()
 
 
 class Player(pygame.sprite.Sprite):
@@ -29,6 +36,7 @@ class Arbre(pygame.sprite.Sprite):
         self.speed = 2
         self.addnewrate = 50
 
+
 class Thunder(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
@@ -37,6 +45,7 @@ class Thunder(pygame.sprite.Sprite):
         self.maxsize = 150
         self.speed = 2
         self.addnewrate = 130
+
 
 class Bonus(pygame.sprite.Sprite):
     def __init__(self):
@@ -48,6 +57,7 @@ class Bonus(pygame.sprite.Sprite):
         self.maxspeed = 8
         self.addnewrate = 50
 
+
 class Badegg(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
@@ -58,6 +68,7 @@ class Badegg(pygame.sprite.Sprite):
         self.maxspeed = 8
         self.addnewrate = 20
 
+
 class Game(pygame.sprite.Sprite):
     def __init__(self):
         self.player = Player()
@@ -66,23 +77,13 @@ class Game(pygame.sprite.Sprite):
         self.bonus = Bonus()
         self.badegg = Badegg()
 
+
 Game = Game()
 
 
 def terminate():
     pygame.quit()
     sys.exit()
-
-
-def wait_for_player_to_pressKey():
-    while True:
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                terminate()
-            if event.type == KEYDOWN:
-                if event.key == K_ESCAPE:  # Pressing ESC quits.
-                    terminate()
-                return
 
 
 def player_has_hit_bonus(playerRect, BONUS):
@@ -142,37 +143,7 @@ GameOverBackground = pygame.image.load('Background-gameover.png')
 StartBackground = pygame.image.load('StartBackground.png')
 HowToPlayBackground = pygame.image.load('How-to-play.png')
 
-
-# Set up start button
-class Button:
-    def __init__(self, color, x, y, width, height, text=''):
-        self.color = color
-        self.x = x
-        self.y = y
-        self.width = width
-        self.height = height
-        self.text = text
-
-    def draw(self, windowSurface, outline=None):
-        # Call this method to draw the button on the screen
-        if outline:
-            pygame.draw.rect(windowSurface, outline, (self.x - 2, self.y - 2, self.width + 4, self.height + 4), 0)
-
-        pygame.draw.rect(windowSurface, self.color, (self.x, self.y, self.width, self.height), 0)
-
-        if self.text != '':
-            font = pygame.font.SysFont('comicsansms', 40)
-            text = font.render(self.text, 1, (0, 0, 0))
-            windowSurface.blit(text, (
-                self.x + (self.width / 2 - text.get_width() / 2), self.y + (self.height / 2 - text.get_height() / 2)))
-
-    def is_over(self, pos):
-        # Pos is the mouse position or a tuple of (x,y) coordinates
-        if pos[0] > self.x < self.x + self.width:
-            if pos[1] > self.y < self.y + self.height:
-                return True
-
-        return False
+game = Game
 
 
 def play():
@@ -215,17 +186,17 @@ def play():
             if not reverseCheat and not slowCheat:
                 bonusAddCounter += 1
             if score > 1000:
-                bonus.addnewrate = 100
+                game.bonus.addnewrate = 100
             if score > 2000:
-                bonus.addnewrate = 200
-            if bonusAddCounter == bonus.addnewrate:
+                game.bonus.addnewrate = 200
+            if bonusAddCounter == game.bonus.addnewrate:
                 bonusAddCounter = 0
-                bonusSize = random.randint(bonus.minsize, bonus.maxsize)
+                bonusSize = random.randint(game.bonus.minsize, game.bonus.maxsize)
                 newBonus = {
                     'rect': pygame.Rect(WINDOWWIDTH - bonusSize, random.randint(0, WINDOWWIDTH - bonusSize),
                                         bonusSize, bonusSize),
-                    'speed': random.randint(bonus.minspeed, bonus.maxspeed),
-                    'surface': pygame.transform.scale(bonus.image, (bonusSize, bonusSize)),
+                    'speed': random.randint(game.bonus.minspeed, game.bonus.maxspeed),
+                    'surface': pygame.transform.scale(game.bonus.image, (bonusSize, bonusSize)),
                 }
 
                 BonusCollection.append(newBonus)
@@ -233,38 +204,38 @@ def play():
             # Add new arbre
             if not reverseCheat and not slowCheat:
                 ArbreAddCounter += 1
-            if ArbreAddCounter == arbre.addnewrate:
+            if ArbreAddCounter == game.arbre.addnewrate:
                 ArbreAddCounter = 0
-                ArbreSize = random.randint(arbre.minsize, arbre.maxsize)
+                ArbreSize = random.randint(game.arbre.minsize, game.arbre.maxsize)
                 newTube = {'rect': pygame.Rect(WINDOWWIDTH, WINDOWHEIGHT - ArbreSize, ArbreSize, ArbreSize),
-                           'speed': arbre.speed,
-                           'surface': pygame.transform.scale(arbre.image, (40, ArbreSize)),
+                           'speed': game.arbre.speed,
+                           'surface': pygame.transform.scale(game.arbre.image, (40, ArbreSize)),
                            }
                 TreeCollection.append(newTube)
 
             # Add new thunder
             if not reverseCheat and not slowCheat:
                 ThunderAddCounter += 1
-            if ThunderAddCounter == thunder.addnewrate:
+            if ThunderAddCounter == game.thunder.addnewrate:
                 ThunderAddCounter = 0
-                ThunderSize = random.randint(thunder.minsize, thunder.maxsize)
+                ThunderSize = random.randint(game.thunder.minsize, game.thunder.maxsize)
                 newThunder = {"rect": pygame.Rect(WINDOWWIDTH, -0, ThunderSize, ThunderSize),
-                              "speed": thunder.speed,
-                              "surface": pygame.transform.scale(thunder.image, (ThunderSize, ThunderSize)),
+                              "speed": game.thunder.speed,
+                              "surface": pygame.transform.scale(game.thunder.image, (ThunderSize, ThunderSize)),
                               }
                 Thunder.append(newThunder)
 
             # Add new badegg
             if not reverseCheat and not slowCheat:
                 BadEggAddCounter += 1
-            if BadEggAddCounter == badegg.addnewrate:
+            if BadEggAddCounter == game.badegg.addnewrate:
                 BadEggAddCounter = 0
-                BadEggSize = random.randint(badegg.minsize, badegg.maxsize)
+                BadEggSize = random.randint(game.badegg.minsize, game.badegg.maxsize)
                 newBadEgg = {'rect': pygame.Rect(WINDOWWIDTH - BadEggSize,
                                                  random.randint(0, WINDOWWIDTH - BadEggSize), BadEggSize,
                                                  BadEggSize),
-                             'speed': random.randint(badegg.minspeed, badegg.maxspeed),
-                             'surface': pygame.transform.scale(badegg.image, (BadEggSize, BadEggSize)),
+                             'speed': random.randint(game.badegg.minspeed, game.badegg.maxspeed),
+                             'surface': pygame.transform.scale(game.badegg.image, (BadEggSize, BadEggSize)),
                              }
 
                 BadEgg.append(newBadEgg)
@@ -334,9 +305,6 @@ def play():
             for e in BadEgg[:]:
                 if -e['rect'].top > WINDOWWIDTH:
                     BadEgg.remove(e)
-
-            # Draw the game world on the window.
-            # windowSurface.fill(BACKGROUNDCOLOR)
 
             # Background game
             windowSurface.blit(Background, [0, 0])
@@ -450,9 +418,6 @@ def play():
             pygame.mouse.set_visible(True)
 
             draw_text('GAME OVER', font, windowSurface, 365, 180)
-            #draw_text('Press a key to play again.', font, windowSurface, 270, 270)
-            #pygame.display.update()
-            #wait_for_player_to_pressKey()
 
             gameOverSound.stop()
 
@@ -472,7 +437,6 @@ def play():
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if GameOverButton.is_over(pos):
                         play()
-
 
 
 # Show the start screen
@@ -506,7 +470,6 @@ while Run:
                     pygame.display.flip()
                     pygame.time.wait(10000)
                     play()
-
 
         if event.type == pygame.MOUSEMOTION:
             if StartButton.is_over(pos):
