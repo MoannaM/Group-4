@@ -19,8 +19,6 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.MOVERATE = 4
 
-player = Player()
-
 
 class Arbre(pygame.sprite.Sprite):
     def __init__(self):
@@ -31,10 +29,6 @@ class Arbre(pygame.sprite.Sprite):
         self.speed = 2
         self.addnewrate = 50
 
-
-arbre = Arbre()
-
-
 class Thunder(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
@@ -43,10 +37,6 @@ class Thunder(pygame.sprite.Sprite):
         self.maxsize = 150
         self.speed = 2
         self.addnewrate = 130
-
-
-thunder = Thunder()
-
 
 class Bonus(pygame.sprite.Sprite):
     def __init__(self):
@@ -58,10 +48,6 @@ class Bonus(pygame.sprite.Sprite):
         self.maxspeed = 8
         self.addnewrate = 50
 
-
-bonus = Bonus()
-
-
 class Badegg(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
@@ -72,8 +58,15 @@ class Badegg(pygame.sprite.Sprite):
         self.maxspeed = 8
         self.addnewrate = 20
 
+class Game(pygame.sprite.Sprite):
+    def __init__(self):
+        self.player = Player()
+        self.arbre = Arbre()
+        self.thunder = Thunder()
+        self.bonus = Bonus()
+        self.badegg = Badegg()
 
-badegg = Badegg()
+Game = Game()
 
 
 def terminate():
@@ -94,7 +87,7 @@ def wait_for_player_to_pressKey():
 
 def player_has_hit_bonus(playerRect, BONUS):
     for b in BONUS:
-        if player.rect.colliderect(b['rect']):
+        if Game.player.rect.colliderect(b['rect']):
             return True
     return False
 
@@ -195,7 +188,7 @@ def play():
         Thunder = []
         score = 0
         vie = 3
-        player.rect.topleft = (WINDOWWIDTH / 2, WINDOWHEIGHT - 50)
+        Game.player.rect.topleft = (WINDOWWIDTH / 2, WINDOWHEIGHT - 50)
         moveLeft = moveRight = moveUp = moveDown = False
         reverseCheat = slowCheat = False
         bonusAddCounter = 0
@@ -215,8 +208,8 @@ def play():
 
                 if event.type == MOUSEMOTION:
                     # If the mouse moves, move the player where to the cursor.
-                    player.rect.centerx = event.pos[0]
-                    player.rect.centery = event.pos[1]
+                    Game.player.rect.centerx = event.pos[0]
+                    Game.player.rect.centery = event.pos[1]
 
             # Add new bonus at the top of the screen, if needed.
             if not reverseCheat and not slowCheat:
@@ -277,14 +270,14 @@ def play():
                 BadEgg.append(newBadEgg)
 
             # Move the player around.
-            if moveLeft and player.rect.left > 0:
-                player.rect.move_ip(-1 * player.MOVERATE, 0)
-            if moveRight and player.rect.right < WINDOWWIDTH:
-                player.rect.move_ip(player.MOVERATE, 0)
-            if moveUp and player.rect.top > 0:
-                player.rect.move_ip(0, -1 * player.MOVERATE)
-            if moveDown and player.rect.bottom < WINDOWHEIGHT:
-                player.rect.move_ip(0, player.MOVERATE)
+            if moveLeft and Game.player.rect.left > 0:
+                Game.player.rect.move_ip(-1 * Game.player.MOVERATE, 0)
+            if moveRight and Game.player.rect.right < WINDOWWIDTH:
+                Game.player.rect.move_ip(Game.player.MOVERATE, 0)
+            if moveUp and Game.player.rect.top > 0:
+                Game.player.rect.move_ip(0, -1 * Game.player.MOVERATE)
+            if moveDown and Game.player.rect.bottom < WINDOWHEIGHT:
+                Game.player.rect.move_ip(0, Game.player.MOVERATE)
 
             # Move the bonus
             for b in BonusCollection:
@@ -366,7 +359,7 @@ def play():
             fichier.close()
 
             # Draw the player's rectangle.
-            windowSurface.blit(player.image, player.rect)
+            windowSurface.blit(Game.player.image, Game.player.rect)
 
             # Draw each bonus.
             for b in BonusCollection:
@@ -379,10 +372,10 @@ def play():
                 # pygame.display.update(e['rect'])
 
             # Check if any of the bonus have hit the player.
-            if player_has_hit_bonus(player.rect, BonusCollection):
+            if player_has_hit_bonus(Game.player.rect, BonusCollection):
                 element_touche = None
                 for b in BonusCollection:
-                    if player.rect.colliderect(b['rect']):
+                    if Game.player.rect.colliderect(b['rect']):
                         element_touche = b
                 BonusCollection.remove(element_touche)
 
@@ -396,7 +389,7 @@ def play():
                     vie += 1
 
             # Check if any of the arbre have hit the player.
-            if player_has_hit_arbre(player.rect, TreeCollection):
+            if player_has_hit_arbre(Game.player.rect, TreeCollection):
                 if score > topScore:
                     topScore = score  # set new top score
                     os.remove("data.txt")
@@ -407,7 +400,7 @@ def play():
                 break
 
             # Check if any of thunder have hit the player
-            if player_has_hit_thunder(player.rect, Thunder):
+            if player_has_hit_thunder(Game.player.rect, Thunder):
                 if score > topScore:
                     topScore = score
                     os.remove("data.txt")
@@ -418,10 +411,10 @@ def play():
                 break
 
             # Check if any of the badegg have hit the player.
-            if player_has_hit_badEgg(player.rect, BadEgg):
+            if player_has_hit_badEgg(Game.player.rect, BadEgg):
                 element_touche = None
                 for e in BadEgg:
-                    if player.rect.colliderect(e['rect']):
+                    if Game.player.rect.colliderect(e['rect']):
                         element_touche = e
                 BadEgg.remove(element_touche)
 
