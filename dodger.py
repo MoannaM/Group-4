@@ -14,10 +14,6 @@ TEXTCOLOR = (0, 0, 0)
 
 
 # création class game
-class Game:
-    def __init__(self):
-        self.player = Player()
-
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
