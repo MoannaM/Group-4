@@ -179,9 +179,10 @@ def play():  # set up of a function to organise the game better
                 bonusAddCounter += 1
             if score > 1000:
                 Game.bonus.addnewrate = 100
-                Game.badegg.addnewrate = 20
+                Game.badegg.addnewrate = 25
             if score > 2000:
                 Game.bonus.addnewrate = 200
+                Game.badegg.addnewrate = 20
             if bonusAddCounter == Game.bonus.addnewrate:
                 bonusAddCounter = 0
                 bonusSize = random.randint(Game.bonus.minsize, Game.bonus.maxsize)
