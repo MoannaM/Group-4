@@ -61,7 +61,7 @@ class Badegg(pygame.sprite.Sprite):
         self.maxsize = 40
         self.minspeed = 1
         self.maxspeed = 8
-        self.addnewrate = 20
+        self.addnewrate = 30
 
 
 class Game(pygame.sprite.Sprite):
@@ -135,7 +135,7 @@ GameOverBackground = pygame.image.load('Background-gameover.png')
 StartBackground = pygame.image.load('StartBackground.png')
 HowToPlayBackground = pygame.image.load('How-to-play.png')
 
-game = Game
+#game = Game
 
 
 def play():  # set up of a function to organise the game better
@@ -178,17 +178,18 @@ def play():  # set up of a function to organise the game better
             if not reverseCheat and not slowCheat:
                 bonusAddCounter += 1
             if score > 1000:
-                game.bonus.addnewrate = 100
+                Game.bonus.addnewrate = 100
+                Game.badegg.addnewrate = 20
             if score > 2000:
-                game.bonus.addnewrate = 200
-            if bonusAddCounter == game.bonus.addnewrate:
+                Game.bonus.addnewrate = 200
+            if bonusAddCounter == Game.bonus.addnewrate:
                 bonusAddCounter = 0
-                bonusSize = random.randint(game.bonus.minsize, game.bonus.maxsize)
+                bonusSize = random.randint(Game.bonus.minsize, Game.bonus.maxsize)
                 newBonus = {
                     'rect': pygame.Rect(WINDOWWIDTH - bonusSize, random.randint(0, WINDOWWIDTH - bonusSize),
                                         bonusSize, bonusSize),
-                    'speed': random.randint(game.bonus.minspeed, game.bonus.maxspeed),
-                    'surface': pygame.transform.scale(game.bonus.image, (bonusSize, bonusSize)),
+                    'speed': random.randint(Game.bonus.minspeed, Game.bonus.maxspeed),
+                    'surface': pygame.transform.scale(Game.bonus.image, (bonusSize, bonusSize)),
                 }
 
                 BonusCollection.append(newBonus)
@@ -196,38 +197,38 @@ def play():  # set up of a function to organise the game better
             # Add new arbre
             if not reverseCheat and not slowCheat:
                 ArbreAddCounter += 1
-            if ArbreAddCounter == game.arbre.addnewrate:
+            if ArbreAddCounter == Game.arbre.addnewrate:
                 ArbreAddCounter = 0
-                ArbreSize = random.randint(game.arbre.minsize, game.arbre.maxsize)
+                ArbreSize = random.randint(Game.arbre.minsize, Game.arbre.maxsize)
                 newTube = {'rect': pygame.Rect(WINDOWWIDTH, WINDOWHEIGHT - ArbreSize, ArbreSize, ArbreSize),
-                           'speed': game.arbre.speed,
-                           'surface': pygame.transform.scale(game.arbre.image, (40, ArbreSize)),
+                           'speed': Game.arbre.speed,
+                           'surface': pygame.transform.scale(Game.arbre.image, (40, ArbreSize)),
                            }
                 TreeCollection.append(newTube)
 
             # Add new thunder
             if not reverseCheat and not slowCheat:
                 ThunderAddCounter += 1
-            if ThunderAddCounter == game.thunder.addnewrate:
+            if ThunderAddCounter == Game.thunder.addnewrate:
                 ThunderAddCounter = 0
-                ThunderSize = random.randint(game.thunder.minsize, game.thunder.maxsize)
+                ThunderSize = random.randint(Game.thunder.minsize, Game.thunder.maxsize)
                 newThunder = {"rect": pygame.Rect(WINDOWWIDTH, -0, ThunderSize, ThunderSize),
-                              "speed": game.thunder.speed,
-                              "surface": pygame.transform.scale(game.thunder.image, (ThunderSize, ThunderSize)),
+                              "speed": Game.thunder.speed,
+                              "surface": pygame.transform.scale(Game.thunder.image, (ThunderSize, ThunderSize)),
                               }
                 Thunder.append(newThunder)
 
             # Add new badegg
             if not reverseCheat and not slowCheat:
                 BadEggAddCounter += 1
-            if BadEggAddCounter == game.badegg.addnewrate:
+            if BadEggAddCounter == Game.badegg.addnewrate:
                 BadEggAddCounter = 0
-                BadEggSize = random.randint(game.badegg.minsize, game.badegg.maxsize)
+                BadEggSize = random.randint(Game.badegg.minsize, Game.badegg.maxsize)
                 newBadEgg = {'rect': pygame.Rect(WINDOWWIDTH - BadEggSize,
                                                  random.randint(0, WINDOWWIDTH - BadEggSize), BadEggSize,
                                                  BadEggSize),
-                             'speed': random.randint(game.badegg.minspeed, game.badegg.maxspeed),
-                             'surface': pygame.transform.scale(game.badegg.image, (BadEggSize, BadEggSize)),
+                             'speed': random.randint(Game.badegg.minspeed, Game.badegg.maxspeed),
+                             'surface': pygame.transform.scale(Game.badegg.image, (BadEggSize, BadEggSize)),
                              }
 
                 BadEgg.append(newBadEgg)
