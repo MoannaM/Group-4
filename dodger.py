@@ -13,7 +13,7 @@ WINDOWHEIGHT = 500
 TEXTCOLOR = (0, 0, 0)
 
 
-# set up of classes
+# Set up of classes
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
@@ -103,6 +103,7 @@ Game = Game()
 def terminate():
     pygame.quit()
     sys.exit()
+
 
 # set up of a function with a text style
 def draw_text(text, font, surface, x, y):
@@ -259,7 +260,7 @@ def play():  # set up of a function to organise the game better
                 elif slowCheat:
                     t['rect'].move_ip(1, 0)
 
-            # move the thunder
+            # Move the thunder
             for h in Thunder:
                 if not reverseCheat and not slowCheat:
                     h["rect"].move_ip(-h["speed"], 0)
@@ -304,7 +305,7 @@ def play():  # set up of a function to organise the game better
             for t in TreeCollection:
                 windowSurface.blit(t["surface"], t['rect'])
 
-            # draw Thunder
+            # Draw Thunder
             for h in Thunder:
                 windowSurface.blit(h["surface"], h["rect"])
 
@@ -387,8 +388,8 @@ def play():  # set up of a function to organise the game better
                 else:
                     vie = vie - 1
 
-            pygame.display.flip()
-            fpsClock.tick(FPS)
+            pygame.display.flip()  # Help to refresh the entire screen
+            fpsClock.tick(FPS)  # Help to time the frame per seconds
 
         # Stop the game and show the "Game Over" screen.
         GameOver = True
