@@ -13,8 +13,7 @@ WINDOWHEIGHT = 500
 TEXTCOLOR = (0, 0, 0)
 
 
-# création class game
-
+# set up of classes
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
@@ -73,25 +72,25 @@ class Game(pygame.sprite.Sprite):
         self.bonus = Bonus()
         self.badegg = Badegg()
 
-    def player_has_hit_bonus(playerRect,b, BONUS):
+    def player_has_hit_bonus(playerRect, b, BONUS):
         for b in BONUS:
             if Game.player.rect.colliderect(b['rect']):
                 return True
         return False
 
-    def player_has_hit_arbre(playerRect, a, Arbre):
+    def player_has_hit_arbre(playerRect, t, Arbre):
         for t in Arbre:
             if Game.player.rect.colliderect(t['rect']):
                 return True
         return False
 
-    def player_has_hit_thunder(playerRect, t, Thunder):
+    def player_has_hit_thunder(playerRect, h, Thunder):
         for h in Thunder:
             if Game.player.rect.colliderect(h["rect"]):
                 return True
         return False
 
-    def player_has_hit_badEgg(playerRect, b, BadEgg):
+    def player_has_hit_badEgg(playerRect, e, BadEgg):
         for e in BadEgg:
             if Game.player.rect.colliderect(e['rect']):
                 return True
@@ -105,7 +104,7 @@ def terminate():
     pygame.quit()
     sys.exit()
 
-
+# set up of a function with a text style
 def draw_text(text, font, surface, x, y):
     textobj = font.render(text, 1, TEXTCOLOR)
     textrect = textobj.get_rect()
@@ -138,7 +137,7 @@ HowToPlayBackground = pygame.image.load('How-to-play.png')
 game = Game
 
 
-def play():
+def play():  # set up of a function to organise the game better
     # start of the game
     fichier = open("data.txt", "r")
     topScore = int(fichier.read())
@@ -278,22 +277,22 @@ def play():
                 elif slowCheat:
                     e['rect'].move_ip(1, 0)
 
-            # Delete bonus that have fallen past the bottom.
+            # Delete bonus that have fallen past the have gone past the screen.
             for b in BonusCollection[:]:
                 if -b['rect'].top > WINDOWWIDTH:
                     BonusCollection.remove(b)
 
-            # Delete arbre that have fallen past the bottom.
+            # Delete arbre that have fallen past the have gone past the screen.
             for t in TreeCollection[:]:
                 if -t['rect'].top > WINDOWWIDTH:
                     TreeCollection.remove(t)
 
-            # Delete thunder have fallen past the bottom
+            # Delete thunder that have fallen past the have gone past the screen.
             for h in Thunder[:]:
                 if -h["rect"].top > WINDOWWIDTH:
                     Thunder.remove(h)
 
-            # Delete badegg that have fallen past the bottom.
+            # Delete badegg that have fallen past the have gone past the screen.
             for e in BadEgg[:]:
                 if -e['rect'].top > WINDOWWIDTH:
                     BadEgg.remove(e)
@@ -304,12 +303,10 @@ def play():
             # Draw arbre
             for t in TreeCollection:
                 windowSurface.blit(t["surface"], t['rect'])
-                # pygame.display.update(t['rect'])
 
             # draw Thunder
             for h in Thunder:
                 windowSurface.blit(h["surface"], h["rect"])
-                # pygame.display.update(h["rect"])
 
             # Draw the score and top score.
             fichier = open("data.txt", "r")
@@ -324,12 +321,10 @@ def play():
             # Draw each bonus.
             for b in BonusCollection:
                 windowSurface.blit(b["surface"], b['rect'])
-                # pygame.display.update(b['rect'])
 
             # Draw each BadEgg.
             for e in BadEgg:
                 windowSurface.blit(e["surface"], e['rect'])
-                # pygame.display.update(e['rect'])
 
             # Check if any of the bonus have hit the player.
             if Game.player_has_hit_bonus(Game.player.rect, BonusCollection):
@@ -341,7 +336,7 @@ def play():
 
                 PlayerHitGiftEggSound.play()
 
-                bonuss = random.choice([1, 2])
+                bonuss = random.choice([1, 2])  # code to randomize the bonus.
                 print(bonuss)
                 if bonuss == 1:
                     score += 100
@@ -359,7 +354,7 @@ def play():
                     fichier.close()
                 break
 
-            # Check if any of thunder have hit the player
+            # Check if any of thunder have hit the player.
             if Game.player_has_hit_thunder(Game.player.rect, Thunder):
                 if score > topScore:
                     topScore = score
@@ -431,7 +426,7 @@ def play():
                         play()
 
 
-# Show the start screen
+# Show the start screen.
 Run = True
 StartButton = Button((0, 0, 0), 370, 220, 145, 60, 'START')
 HowToPlayButton = Button((0, 0, 0), 40, 400, 220, 52, 'how to play')
